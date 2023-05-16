@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc; 
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+using System.Xml.Linq;
+using static System.Net.WebRequestMethods;
 
 namespace WEB.Controllers
 {
@@ -7,7 +10,7 @@ namespace WEB.Controllers
 
         public HomeController()
         {
-
+            
         }
 
         public IActionResult Index()
