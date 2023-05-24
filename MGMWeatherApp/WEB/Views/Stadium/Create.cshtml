@@ -1,0 +1,81 @@
+﻿@using Entities.Concrete;
+@using WEB.ViewModels;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model StadiumCreateViewModel
+
+<section class="content p-5">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Stadyum ekle</h3>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div class="form-group">
+                    <label>Stadyum Adı</label>
+                    <input asp-for="Name" type="text" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Şehir</label>
+                    <select asp-for="SelectedCityId" asp-items="@(new SelectList(Model.Cities, nameof(City.Id), nameof(City.Name)))" class="form-control select2bs4 w-100">
+                        <option>Bir şehir seçiniz.</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Giriş verisi tarih</label>
+                    <input asp-for="MeasureDate" type="text" class="form-control" />
+
+                    @*<div class="input-group date w-25" id="reservationdate" data-target-input="nearest">
+                        <input asp-for="MeasureDate" type="text" class="form-control" class="form-control datetimepicker-input" />
+                        <div class="input-group-append" data-target="#MeasureDate" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                    </div>*@
+                </div>
+                <div class="form-group">
+                    <div class="row align-items-center justify-content-between">
+                        @for (int i = 0; i < Model.StadiumDetails.HourTemps.Count; i++)
+                        {
+                            <div class="d-flex flex-column align-items-start col-2 border border-primary rounded m-3 p-3">
+                                <label>Saat</label>
+                                <input asp-for="StadiumDetails.HourTemps[i].Hour" type="number" />
+                                <label>Sıcaklık</label>
+                                <input asp-for="StadiumDetails.HourTemps[i].Temperature" type="number" />
+                                <label>Nem</label>
+                                <input asp-for="StadiumDetails.HourTemps[i].Precipitation" type="number" />
+                                <label>Beklenen Hava Durumu</label>
+                                <select asp-for="StadiumDetails.HourTemps[i].SelectedWeatherTypeId" asp-items="@(new SelectList(Model.WeatherTypes, nameof(WeatherType.Id), nameof(WeatherType.Description)))" class="form-control select2bs4 w-100">
+                                    <option>Bir şehir seçiniz.</option>
+                                </select>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts
+    {
+    <script src="~/adminlte/plugins/daterangepicker/daterangepicker.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            });
+
+            //$('#MeasureDate').datetimepicker({
+            //    format: 'L',
+            //    defaultDate: new Date(Date.now())
+            //});
+        });
+    </script>
+}
