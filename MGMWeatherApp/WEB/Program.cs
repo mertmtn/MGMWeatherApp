@@ -1,3 +1,7 @@
+using Business.Abstract;
+using Business.Concrete;
+using Data.Abstract;
+using Data.Concrete.EntityFramework;
 using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddTransient<IStadiumService, StadiumManager>();
+builder.Services.AddTransient<IStadiumDal, EfStadiumDal>();
 
 var app = builder.Build();
 

@@ -12,7 +12,9 @@
 <table class="table">
     <thead>
         <tr>
-            <th></th>
+            <th>Stadyum Adı</th>
+            <th>Şehir</th>
+            <th>İşlemler</th>
         </tr>
     </thead>
     <tbody>
@@ -20,19 +22,19 @@
         {
             <tr>
                 <td>
-                    @item.
+                    @item.Name
                 </td>
                 <td>
+                    @item.Name
                 </td>
-                <td>
-                </td>
-            </tr>
-            <tr>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
                     @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
                     @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
                 </td>
+            </tr>
+            <tr>
+                
             </tr>
         }
     </tbody>

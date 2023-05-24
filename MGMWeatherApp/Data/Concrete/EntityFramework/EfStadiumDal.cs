@@ -2,6 +2,7 @@
 using Data.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using System.Net.Mime;
 
 namespace Data.Concrete.EntityFramework
 {
@@ -9,7 +10,19 @@ namespace Data.Concrete.EntityFramework
     {
         public List<StadiumDetailDTO> GetAllStadium()
         {
-            throw new NotImplementedException();
+            using (var context = new MGMWeatherDbContext())
+            {
+                var result =  from stadium in context.Stadiums
+                       join city in context.CityDistricts
+                       on stadium.CityId equals city.PlaceId
+                       select new StadiumDetailDTO
+                       {
+                           CityName = city.Name,
+                           Name = stadium.Name
+                       };
+
+                return result.ToList();
+            }
         }
 
         public StadiumDetailDTO GetById(int id)
