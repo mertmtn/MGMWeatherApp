@@ -39,7 +39,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
             <div class="container">
-                <a href="../../index3.html" class="navbar-brand">
+                <a href="@Url.Action("Index", "Home")" class="navbar-brand">
                     <span class="brand-text font-weight-light">MGM</span>
                 </a>
 
@@ -51,7 +51,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <!-- Left navbar links -->
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a href="index3.html" class="nav-link">Anasayfa</a>
+                            <a href="@Url.Action("Index", "Home")" class="nav-link">Anasayfa</a>
                         </li>
                         <li class="nav-item">
                             <a href="@Url.Action("Index", "Stadium")" class="nav-link">Stadyumlar</a>
