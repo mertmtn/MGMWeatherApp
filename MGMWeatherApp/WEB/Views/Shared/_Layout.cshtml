@@ -1,8 +1,4 @@
 ﻿<!DOCTYPE html>
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -57,7 +53,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <a href="@Url.Action("Index", "Stadium")" class="nav-link">Stadyumlar</a>
                         </li>
                         <li>
-                            <a href="#" class="nav-link">İstasyonlar</a>
+                            <a href="@Url.Action("Index", "Station")" class="nav-link">İstasyonlar</a>
                         </li>
                     </ul>
                 </div>
@@ -81,7 +77,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 Anything you want
             </div>
             <!-- Default to the left -->
-            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+            <strong>@DateTime.Now.Year - MGM</strong>
         </footer>
     </div>
     <!-- ./wrapper -->

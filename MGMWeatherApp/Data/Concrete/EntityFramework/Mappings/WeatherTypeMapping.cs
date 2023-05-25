@@ -10,8 +10,8 @@ namespace Data.Concrete.EntityFramework.Mappings
         {
             builder.HasKey(c => c.Id);
             builder.Property(c => c.Id).ValueGeneratedOnAdd();
-            builder.Property(c => c.Type).HasMaxLength(50).IsRequired();            
-
+            builder.Property(c => c.Type).HasMaxLength(50).IsRequired();
+            builder.HasOne(c => c.StadiumMeasure).WithOne(c => c.WeatherType).HasForeignKey<StadiumMeasuring>(u => u.ExpectedWeatherTypeId);
             builder.HasData(
                         new() { Id = 1, Type = "Açık", Description = "Açık" },
                         new() { Id = 2, Type = "Parçalı Bulutlu", Description = "Parçalı Bulutlu" },

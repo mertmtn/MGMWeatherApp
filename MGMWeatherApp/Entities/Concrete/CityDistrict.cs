@@ -7,7 +7,8 @@ namespace Entities.Concrete
     {
         public CityDistrict()
         {
-            DistrictList = new HashSet<CityDistrict>();
+            Place = new HashSet<CityDistrict>();
+            Stadium = new HashSet<Stadium>();
         }        
 
         public int PlaceId { get; set; }
@@ -22,6 +23,8 @@ namespace Entities.Concrete
 
         public virtual CityDistrict City { get; set; }
 
-        public virtual ICollection<CityDistrict> DistrictList { get; set; }
+        public virtual ICollection<CityDistrict> Place { get; set; }
+
+        public virtual ICollection<Stadium> Stadium { get; set; }
     }
 }

@@ -12,8 +12,7 @@ namespace Data.Concrete.EntityFramework.Mappings
         {
             builder.HasKey(c => c.Id);
             builder.Property(c => c.Id).ValueGeneratedOnAdd();
-            builder.Property(c => c.Name).HasMaxLength(100).IsRequired();
-            //builder.HasMany(c => c.CityDistricts).WithOne(c => c.Region).HasForeignKey(c=>c.RegionId);
+            builder.Property(c => c.Name).HasMaxLength(100).IsRequired();          
 
             builder.HasData(
                         new() { Id = 1, Name = "Marmara Bölgesi" },

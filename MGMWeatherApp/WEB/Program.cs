@@ -2,7 +2,6 @@ using Business.Abstract;
 using Business.Concrete;
 using Data.Abstract;
 using Data.Concrete.EntityFramework;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +9,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddTransient<IStadiumService, StadiumManager>();
+builder.Services.AddTransient<IStationService, StationManager>();
+builder.Services.AddTransient<IFihristService, FihristManager>();
+builder.Services.AddTransient<IStadiumMeasuringService, StadiumMeasuringManager>();
+
 builder.Services.AddTransient<IStadiumDal, EfStadiumDal>();
+builder.Services.AddTransient<IStadiumDal, EfStadiumDal>();
+builder.Services.AddTransient<IFihristDal, EfFihristDal>();
+builder.Services.AddTransient<IStationDal, EfStationDal>();
+
 
 var app = builder.Build();
 
@@ -18,7 +25,7 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+     
     app.UseHsts();
 }
 

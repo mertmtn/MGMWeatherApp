@@ -11,7 +11,7 @@ namespace Data.Concrete.EntityFramework.Mappings
         {
             builder.HasKey(c => c.PlaceId); 
             builder.HasOne(c => c.Region).WithMany(r => r.CityDistricts).HasForeignKey(u => u.RegionId);
-            builder.HasOne(c => c.City).WithMany(c => c.DistrictList).HasForeignKey(u => u.CityId);
+            builder.HasMany(c => c.Stadium).WithOne(c => c.CityDistrict).HasForeignKey(u => u.CityId);
         }
     }
 }
