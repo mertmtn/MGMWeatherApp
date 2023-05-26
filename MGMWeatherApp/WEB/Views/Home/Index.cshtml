@@ -1,8 +1,172 @@
-﻿@{
+﻿@using WEB.ViewModels;
+@{
     ViewData["Title"] = "Home Page";
 }
+@model HomeIndexViewModel
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="content p-5">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Hava durumu</h3>
+        </div>
+        <div class="card-body row align-items-center justify-content-center">
+            <div class="col-12 row align-items-center">
+                <div class="col-12 row border rounded mb-2">
+                    <div class="col-6">
+                        <div class="form-group mb-3">
+                            <label>İl</label>
+                            <select class="form-control select2bs4 city">
+                                <option value="-1">İl seçiniz</option>
+                                @foreach (var city in Model.Cities)
+                                {
+                                    <option value="@city.Id">@city.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group mb-3">
+                            <label>İlçe</label>
+                            <select class="form-control select2bs4 district">
+                                <option value="-1">İlçe seçiniz</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 row align-items-center justify-content-start">
+                    <div class="col-3" id="latitude">
+                        <label>Enlem:</label>
+                        <span></span>
+                    </div>
+                    <div class="col-3" id="longitude">
+                        <label>Boylam:</label>
+                        <span></span>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <table class="table table-hover" id="weatherDetailsTable">
+                        <thead>
+                            <tr>
+                                <th>Saat</th>
+                                <th>Beklenen Durum</th>
+                                <th>Sıcaklık</th>
+                                <th>Hissedilen Sıcaklık</th>
+                                <th>Nem</th>
+                                <th>Rüzgar Yönü</th>
+                                <th>Ort. Rüzgar Hızı</th>
+                                <th>Maks. Rüzgar Hızı</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts
+{
+    <script>
+        let weatherDetailsDataTable;
+
+        self = this;
+
+        $(document).ready(function () {
+            $('select.district').on('change', function(e) {
+                if(e.target.value > -1)
+                {
+                    getWeatherDetails();
+                }
+            });
+            $('select.city').on('change', function(e) {
+                console.log("city changed", e.target.value);
+                let options = ['<option value="-1">İlçe seçiniz</option>'];
+
+                let cities = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Cities));
+
+                cities.filter(c => c.Id == e.target.value).forEach(city => city.Districts.forEach(district => options.push('<option value="'+district.Id+'">'+district.Name+'</option>')))
+
+                $('select.district').empty();
+
+                $('select.district').append(options);
+                console.log(options);
+            });
+
+            self.weatherDetailsDataTable = $('#weatherDetailsTable').DataTable({
+                responsive: true,
+                autoWidth: true,
+                columns: [
+                    {
+                        data: 'hourGap',
+                        render: function(data, type, row) {
+                            if(type === 'sort') return data;
+
+                            return `<div class="d-flex flex-column align-items-center justify-content-center w-100">
+                                <span>${row.day}</span>
+                                <span>${row.hourGap}</span>
+                            </div>`;
+                        }
+                    },
+                    {
+                        data: 'weatherTypeName'
+                    },
+                    {
+                        data: 'temperature'
+                    },
+                    {
+                        data: 'temperatureFeelsLike'
+                    },
+                    {
+                        data: 'humidity'
+                    },
+                    {
+                        data: 'windDirection'
+                    },
+                    {
+                        data: 'averageWindSpeed'
+                    },
+                    {
+                        data: 'maxWindSpeed'
+                    }
+                ]
+            });
+
+            console.log("init", self.weatherDetailsDataTable);
+        });
+         
+        function getWeatherDetails()
+        {
+            console.log('self 1', self.weatherDetailsDataTable);
+            console.log('self 2', this.weatherDetailsDataTable);
+            console.log('self 3', weatherDetailsDataTable);
+            self.weatherDetailsDataTable.clear();
+
+            let cityId = $('select.city').val();
+            let districtId = $('select.district').val();
+
+            $.ajax({
+                url: '@Url.Action("GetWeatherByCityAndDistrict")?cityId=' + cityId + "&districtId=" + districtId,
+                type: 'POST',
+                data: 'json',
+                cache: false,
+                success: (response) => {
+                    console.log("success resp", response);
+                        
+                    if(response.weatherDetails) {
+                        $("#longitude span").html(response.longitude);
+                        $("#latitude span").html(response.latitude);
+
+                        response.weatherDetails.forEach(detail =>
+                        {
+                            self.weatherDetailsDataTable.row.add(detail).draw();
+                        });
+                        
+                    }
+                },
+                error: (response) => {
+                    console.log("error resp", response);
+                }
+            })
+        }
+    </script>
+}
