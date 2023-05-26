@@ -1,0 +1,125 @@
+﻿@using WEB.ViewModels;
+@{
+    ViewData["Title"] = "EntryMeasure";
+}
+
+@model StadiumMeasureEntryViewModel
+<section class="content p-5">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Hava durumu ekle</h3>
+        </div>
+        <div class="card-body row align-items-center justify-content-center">
+            <div class="col-12 row align-items-center" id="detailContainer">
+                <div class="col-12 detailItem row border rounded mb-2">
+                    <input type="hidden" value="@Model.StadiumId" class="stadiumId" />
+                    <div class="col-4">
+                        <div class="form-group mb-3">
+                            <label>Ölçüm Tarihi</label>
+                            <input type="date" class="date form-control" />
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group mb-3">
+                            <label>Saat</label>
+                            <input type="number" class="hour form-control" />
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group mb-3">
+                            <label>Sıcaklık</label>
+                            <input type="number" class="temperature form-control" />
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group mb-3">
+                            <label>Nem</label>
+                            <input type="number" class="precipitation form-control" />
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group mb-3">
+                            <label>Hava Durumu</label>
+                            <select class="form-control select2bs4 weatherType">
+                                <option value="-1">Hava durumu seçin</option>
+                                @foreach (var weatherType in Model.WeatherTypes)
+                                {
+                                    <option value="@weatherType.Id">@weatherType.Type</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-success mr-3" onclick="populate()"><i class="fa fa-plus mr-2"></i>Ekle</button>
+            <button class="btn btn-danger" onclick="removeLast()"><i class="fa fa-minus mr-2"></i>Remove Last</button>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-primary" onclick="addDetails()">Kaydet</button>
+        </div>
+    </div>
+</section>
+
+@section Scripts
+    {
+    <script>
+        var container;
+
+        $(document).ready(function () {
+            container = $(".detailItem")[0].outerHTML;
+        });
+
+        function populate() {
+            if ($(".detailItem").length <= 16) {
+                $("#detailContainer").append(container);
+            }
+        }
+
+        function removeLast() {
+            if ($(".detailItem").length > 1) {
+                $(".detailItem")[$(".detailItem").length - 1].remove();
+            }
+        }
+
+        function addDetails() {
+            let items = $(".detailItem");
+
+            if (items.length > 0) {
+                var entities = Array.from(items).map(element => {
+                    let hour = $(".hour", element).val();
+                    let temperature = $(".temperature", element).val();
+                    let precipitation = $(".precipitation", element).val();
+                    let weatherTypeId = $(".weatherType", element).val();
+                    let stadiumId = $(".stadiumId", element).val();
+                    let date = $(".date", element).val();
+
+                    return {
+                        Hour: hour,
+                        Temperature: temperature,
+                        Precipitation: precipitation,
+                        SelectedWeatherTypeId: weatherTypeId,
+                        StadiumId: stadiumId,
+                        MeasureDate: date
+                    };
+                }); 
+               
+                $.ajax({
+                    url: '@Url.Action("EntryMeasure","Stadium")',
+                    type: 'POST',
+                    cache: false,
+                    data: JSON.stringify({ Entities: entities }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: (response) => {
+                        console.log("success", response);
+                    },
+                    error: (response) => {
+                        console.error("error", response);
+                    }
+                });
+            }
+        }
+    </script>
+}
+

@@ -8,11 +8,13 @@ namespace WEB.Controllers
     public class StadiumController : Controller
     {
         private readonly IStadiumService _stadiumService;
+        private readonly IStadiumMeasuringService _stadiumMeasuringService;
         private readonly IFihristService _fihristService;
 
-        public StadiumController(IStadiumService stadiumService, IFihristService fihristService)
+        public StadiumController(IStadiumService stadiumService, IStadiumMeasuringService stadiumMeasuringService, IFihristService fihristService)
         {
             _stadiumService = stadiumService;
+            _stadiumMeasuringService = stadiumMeasuringService;
             _fihristService = fihristService;
         }
 
@@ -22,7 +24,6 @@ namespace WEB.Controllers
             return View(new StadiumViewModel { StadiumList = stadiumList });
         }
 
-        ///TODO: Modal olacaksa partial view olabilir.
         public IActionResult Create()
         {
             var vm = new StadiumCreateViewModel()
@@ -31,11 +32,10 @@ namespace WEB.Controllers
                 Cities = _fihristService.GetAllCity().Data.Select(x => new City { Id = x.Value, Name = x.Text }).ToList(),
                 WeatherTypes = _fihristService.GetAllWeatherType().Data.Select(x => new WeatherType { Id = x.Value, Type = x.Text }).ToList()
             };
-
             return View(vm);
         }
 
-        ///TODO: Modal olacaksa redirect belirtilebilir.
+
         [HttpPost]
         public IActionResult Create(StadiumCreateViewModel stadiumViewModel)
         {
@@ -58,13 +58,52 @@ namespace WEB.Controllers
         }
 
         ///TODO: Modal olacaksa partial view olabilir.
-        public IActionResult Edit()
+        public IActionResult Edit(int id)
         {
+            var result = _stadiumService.GetById(id).Data;
             var vm = new StadiumEditViewModel()
             {
                 WeatherTypes = _fihristService.GetAllWeatherType().Data.Select(x => new WeatherType { Id = x.Value, Type = x.Text }).ToList()
             };
             return View(vm);
+        }
+
+
+        public IActionResult EntryMeasure(int id)
+        {
+            var vm = new StadiumMeasureEntryViewModel()
+            {
+                StadiumId = id,
+                WeatherTypes = _fihristService.GetAllWeatherType().Data.Select(x => new WeatherType { Id = x.Value, Type = x.Text }).ToList()
+            };
+            return View(vm);
+        }
+
+        [HttpPost]
+        public IActionResult EntryMeasure([FromBody]StadiumMeasureEntryViewModel request)
+        {
+            try
+            {
+                foreach (var item in request.Entities)
+                {
+                    var result = _stadiumMeasuringService.Add(new StadiumMeasuring
+                    {
+                        StadiumId = item.StadiumId,
+                        ExpectedWeatherTypeId = item.SelectedWeatherTypeId.Value,
+                        Hour = item.Hour.Value,
+                        Humidity = item.Precipitation.Value,
+                        Temperature = item.Temperature.Value,
+                        MeasureDate = item.MeasureDate
+                    });
+                }
+              
+                return RedirectToAction("Index", "Stadium");
+            }
+            catch (Exception ex)
+            {
+                request.WeatherTypes = _fihristService.GetAllWeatherType().Data.Select(x => new WeatherType { Id = x.Value, Type = x.Text }).ToList();
+                return View(request);
+            }
         }
 
         ///TODO: Modal olacaksa redirect belirtilebilir.

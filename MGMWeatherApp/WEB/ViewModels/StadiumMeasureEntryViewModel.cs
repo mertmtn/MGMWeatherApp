@@ -2,31 +2,25 @@
 
 namespace WEB.ViewModels
 {
-    public class StadiumEditViewModel
+ 
+    public class StadiumMeasureEntryViewModel
     {
         public List<WeatherType> WeatherTypes { get; set; }
-
-        public StadiumEditViewModel()
-        {
-            this.WeatherTypes = new List<WeatherType>();
-        }
-    }
-
-    public class StadiumEditRequest
-    {
         public List<StadiumMeasureEntryViewModel> Entities { get; set; }
 
-        public StadiumEditRequest()
+        public StadiumMeasureEntryViewModel()
         {
-            this.Entities = new List<StadiumMeasureEntryViewModel>();
+            this.WeatherTypes = new List<WeatherType>(); this.Entities = new List<StadiumMeasureEntryViewModel>();
         }
-    }
-
-    public class StadiumEditEntity
-    {
+        public int Id { get; set; }
+        public int StadiumId { get; set; }
+        public DateOnly MeasureDate { get; set; }
         public int? Hour { get; set; }
         public double? Temperature { get; set; }
         public int? Precipitation { get; set; }
         public int? SelectedWeatherTypeId { get; set; }
+        
     }
+
+   
 }

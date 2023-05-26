@@ -14,7 +14,7 @@ builder.Services.AddTransient<IFihristService, FihristManager>();
 builder.Services.AddTransient<IStadiumMeasuringService, StadiumMeasuringManager>();
 
 builder.Services.AddTransient<IStadiumDal, EfStadiumDal>();
-builder.Services.AddTransient<IStadiumDal, EfStadiumDal>();
+builder.Services.AddTransient<IStadiumMeasuringDal, EfStadiumMeasuringDal>();
 builder.Services.AddTransient<IFihristDal, EfFihristDal>();
 builder.Services.AddTransient<IStationDal, EfStationDal>();
 
