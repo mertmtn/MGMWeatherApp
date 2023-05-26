@@ -1,7 +1,115 @@
-﻿
+﻿@using WEB.ViewModels;
+
 @{
     ViewData["Title"] = "Index";
 }
+@model StationViewModel
 
-<h1>Index</h1>
+<section class="content p-5">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">İstasyonlar</h3>
+        </div>
+        <div class="card-body row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label>Şehir</label>
+                    <select id="select-city" class="form-control select2bs4 w-100">
+                        <option>Bir şehir seçiniz.</option>
+                    </select>
+                </div>
+            </div>
+            <table class="table table-hover" id="table-station">
+                <thead>
+                    <tr>
+                        <th>İstasyon Adı</th>
+                        <th>İstasyon No.</th>
+                        <th>ICAO</th>
+                        <th>İlçe</th>
+                        <th>Harita</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="col-12">
+                <a href="@Url.Action("Create")" class="btn btn-primary">Yeni İstasyon Ekle</a>
+            </div>
+        </div>
+    </div>
+</section>
 
+@section Scripts
+{
+    <script>
+        $(document).ready(() => {
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            });
+
+            getCities(() => fillCitySelect("#select-city", -1));
+
+            $("#select-city").on("change", (e) => getStations(e.target.value));
+        });
+
+        function getStations(cityId)
+        {
+            $.ajax({
+                url: '@Url.Action("GetStations")?cityId=' + cityId,
+                type: 'GET',
+                dataType: 'json',
+                success: (response) => {
+                    $("#table-station > tbody").empty();
+
+                    if(response) {
+                        response.forEach(station =>
+                        {
+                            console.log("station", station);
+                            let tr = document.createElement("tr");
+
+                            let nameTd = document.createElement("td");
+                            let nameText = document.createTextNode(station.name);
+                            nameTd.appendChild(nameText);
+                            tr.appendChild(nameTd);
+
+                            let stationNumberTd = document.createElement("td");
+                            let sectionText = document.createTextNode(station.stationNumber);
+                            stationNumberTd.appendChild(sectionText);
+                            tr.appendChild(stationNumberTd);
+
+                            let icaoNumberTd = document.createElement("td");
+                            let icaoText = document.createTextNode(station.icao);
+                            icaoNumberTd.appendChild(icaoText);
+                            tr.appendChild(icaoNumberTd);
+
+                            let districtNumberTd = document.createElement("td");
+                            let districtText = document.createTextNode(station.district);
+                            districtNumberTd.appendChild(districtText);
+                            tr.appendChild(districtNumberTd);
+                            
+                            let urlNumberTd = document.createElement("td");
+                            let a = document.createElement("a");
+                            a.setAttribute("href", station.googleMapsUrl);
+                            a.setAttribute("target", "_blank");
+                            let urlText = document.createTextNode("Tıkla");
+                            a.appendChild(urlText);
+                            urlNumberTd.appendChild(a);
+                            tr.appendChild(urlNumberTd);
+
+                            let editBtnTd = document.createElement("td");
+                            let a2 = document.createElement("a");
+                            a2.className = "btn btn-primary";
+                            a2.setAttribute("href", '@Url.Action("Update")?stationId=' + station.id);
+                            let btnText = document.createTextNode("Düzenle");
+                            a2.appendChild(btnText);
+                            editBtnTd.appendChild(a2);
+                            tr.appendChild(editBtnTd);
+
+                            $("#table-station > tbody").append(tr);
+                        });
+                    }
+                }
+            })
+        }
+    </script>
+}

@@ -16,50 +16,7 @@ namespace WEB.Controllers
 
         public IActionResult Index()
         {
-            var vm = new HomeIndexViewModel()
-            {
-                Cities = new()
-                {
-                    new City()
-                    {
-                        Id = 1,
-                        Name = "Şehir 1",
-                        Districts = new()
-                        {
-                            new District()
-                            {
-                                Id = 1,
-                                Name = "Şehir 1 ilçe 1"
-                            },
-                            new District()
-                            {
-                                Id = 2,
-                                Name = "Şehir 1 ilçe 2"
-                            }
-                        }
-                    },
-                    new City()
-                    {
-                        Id = 2,
-                        Name = "Şehir 2",
-                        Districts = new()
-                        {
-                            new District()
-                            {
-                                Id = 3,
-                                Name = "Şehir 2 ilçe 1"
-                            },
-                            new District()
-                            {
-                                Id = 4,
-                                Name = "Şehir 2 ilçe 2"
-                            }
-                        }
-                    }
-                }
-            };
-
-            return View(vm);
+            return View();
         }
 
         public JsonResult GetWeatherByCityAndDistrict(int? cityId, int? districtId)

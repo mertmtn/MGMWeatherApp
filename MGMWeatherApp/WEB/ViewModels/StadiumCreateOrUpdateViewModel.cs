@@ -15,13 +15,11 @@ namespace WEB.ViewModels
         public string? Name { get; set; }
         public int SelectedCityId { get; set; }
         public StadiumDetails StadiumDetails { get; set; }
-        public List<City> Cities { get; set; }
         public List<WeatherType> WeatherTypes { get; set; }
         public DateTime MeasureDate { get; set; }
         public StadiumCreateViewModel()
         {
             this.StadiumDetails = new StadiumDetails();
-            this.Cities = new List<City>();
             this.WeatherTypes = new List<WeatherType>();
         }
     }

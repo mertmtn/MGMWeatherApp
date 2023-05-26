@@ -1,11 +1,11 @@
-﻿@using Entities.Concrete;
-@using WEB.ViewModels;
+﻿@using WEB.ViewModels;
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
 }
-@model StadiumCreateViewModel
+
+@model StadiumUpdateViewModel
 
 <section class="content p-5">
     <div class="card card-primary">
@@ -13,14 +13,14 @@
             <h3 class="card-title">Stadyum ekle</h3>
         </div>
         <div class="card-body">
-            <form asp-action="Create" method="post">
+            <form asp-action="Update" method="post">
                 <div class="form-group">
                     <label>Stadyum Adı</label>
                     <input asp-for="Name" type="text" class="form-control" />
                 </div>
                 <div class="form-group">
                     <label>Şehir</label>
-                    <select  id="select-city" asp-for="SelectedCityId" class="form-control select2bs4 w-100">
+                    <select id="select-city" asp-for="CityId" class="form-control select2bs4 w-100">
                         <option>Bir şehir seçiniz.</option>
                     </select>
                 </div>
@@ -42,7 +42,7 @@
                 theme: 'bootstrap4'
             });
 
-            getCities(() => fillCitySelect("#select-city", -1));
+            getCities(() => fillCitySelect("#select-city", @Model.CityId));
         });
     </script>
 }

@@ -28,7 +28,6 @@ namespace WEB.Controllers
             var vm = new StadiumCreateViewModel()
             {
                 MeasureDate = DateTime.Now.Date,
-                Cities = _fihristService.GetAllCity().Data.Select(x => new City { Id = x.Value, Name = x.Text }).ToList(),
                 WeatherTypes = _fihristService.GetAllWeatherType().Data.Select(x => new WeatherType { Id = x.Value, Type = x.Text }).ToList()
             };
 
@@ -50,7 +49,6 @@ namespace WEB.Controllers
             }
             catch (Exception ex)
             {
-                stadiumViewModel.Cities = _fihristService.GetAllCity().Data.Select(x => new City { Id = x.Value, Name = x.Text }).ToList();
                 stadiumViewModel.WeatherTypes = _fihristService.GetAllWeatherType().Data.Select(x => new WeatherType { Id = x.Value, Type = x.Text }).ToList();
 
                 return View(stadiumViewModel);
@@ -109,6 +107,23 @@ namespace WEB.Controllers
                 return Json(ex);
                 throw;
             }
+        }
+
+        public IActionResult Update(int? stadiumId)
+        {
+            var vm = new StadiumUpdateViewModel
+            {
+                Name = "Patates",
+                CityId = 1
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public IActionResult Update(StadiumUpdateViewModel vm)
+        {
+            return RedirectToAction("Index");
         }
 
         public JsonResult GetStadiumDetails(int? stadiumId)

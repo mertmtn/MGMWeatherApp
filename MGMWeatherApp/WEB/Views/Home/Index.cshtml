@@ -15,19 +15,15 @@
                     <div class="col-6">
                         <div class="form-group mb-3">
                             <label>İl</label>
-                            <select class="form-control select2bs4 city">
+                            <select id="select-city" class="form-control select2bs4 city">
                                 <option value="-1">İl seçiniz</option>
-                                @foreach (var city in Model.Cities)
-                                {
-                                    <option value="@city.Id">@city.Name</option>
-                                }
                             </select>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="form-group mb-3">
                             <label>İlçe</label>
-                            <select class="form-control select2bs4 district">
+                            <select id="select-district" class="form-control select2bs4 district">
                                 <option value="-1">İlçe seçiniz</option>
                             </select>
                         </div>
@@ -70,7 +66,9 @@
 
         self = this;
 
-        $(document).ready(function () {
+        $(document).ready(() => {
+            getCities(() => fillCitySelect("#select-city", -1));
+
             $('select.district').on('change', function(e) {
                 if(e.target.value > -1)
                 {
@@ -79,15 +77,8 @@
             });
 
             $('select.city').on('change', function(e) {
-                let options = ['<option value="-1">İlçe seçiniz</option>'];
-
-                let cities = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Cities));
-
-                cities.filter(c => c.Id == e.target.value).forEach(city => city.Districts.forEach(district => options.push('<option value="'+district.Id+'">'+district.Name+'</option>')))
-
-                $('select.district').empty();
-
-                $('select.district').append(options);
+                console.log("change city");
+                getDistricts(e.target.value, () => fillDistrictSelect("#select-district", -1));
             });
 
             self.weatherDetailsDataTable = $('#weatherDetailsTable').DataTable({

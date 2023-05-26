@@ -1,0 +1,65 @@
+﻿@using WEB.ViewModels;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model StationCreateViewModel
+
+<section class="content p-5">
+    <div class="card card-primary">
+        <form action="Create" method="post" id="form-station">
+            <div class="card-header">
+                <h3 class="card-title">İstasyon ekle</h3>
+            </div>
+            <div class="card-body row align-items-center justify-content-start">
+                <div class="col-12 form-group">
+                    <label>İstasyon Adı</label>
+                    <input asp-for="Name" class="form-control" />
+                </div>
+                <div class="col-12 form-group">
+                    <label>İstasyon Numarası</label>
+                    <input asp-for="StationNumber" class="form-control" />
+                </div>
+                <div class="col-12 form-group">
+                    <label>ICAO</label>
+                    <input asp-for="ICAO" class="form-control" />
+                </div>
+                <div class="col-12 form-group">
+                    <label>Google Maps Url</label>
+                    <input asp-for="GoogleMapsUrl" class="form-control" />
+                </div>
+                <div class="col-12 form-group">
+                    <label>İl</label>
+                    <select asp-for="SelectedCityId" class="form-control">
+                        <option value="-1">İl Seçiniz</option>
+                    </select>
+                </div>
+                <div class="col-12 form-group">
+                    <label>İlçe</label>
+                    <select asp-for="SelectedDistrictId" class="form-control">
+                        <option value="-1">İlçe Seçiniz</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" type="submit">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function()
+        {
+            getCities(() => fillCitySelect("#SelectedCityId", -1));
+
+            $("#SelectedCityId").on("change", (event) =>
+            {
+                getDistricts(event.target.value, () => fillDistrictSelect("#SelectedDistrictId", -1));
+            });
+        });
+    </script>
+}
