@@ -14,6 +14,10 @@
         </div>
         <div class="card-body row align-items-center justify-content-center">
             <div class="col-12 row align-items-center" id="detailContainer">
+                <div class="form-group mb-3">
+                    <label>Gün</label>
+                    <input type="date" id="detailDate" class="form-control" />
+                </div>
                 <div class="col-12 detailItem row border rounded mb-2">
                     <div class="col-4">
                         <div class="form-group mb-3">
@@ -107,7 +111,7 @@
                     url: '@Url.Action("Edit")',
                     type: 'POST',
                     cache: false,
-                    data: JSON.stringify({ Entities: entities }),
+                    data: JSON.stringify({ Day: $("#detailDate").val(), Entities: entities }),
                     dataType: 'json',
                     contentType: 'application/json',
                     success: (response) => {
