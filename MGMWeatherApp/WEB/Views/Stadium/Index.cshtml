@@ -40,3 +40,151 @@
         }
     </tbody>
 </table>
+
+
+<section class="content p-5">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Stadyumlar</h3>
+        </div>
+        <div class="card-body row align-items-center justify-content-center">
+            <div class="col-12 row align-items-center">
+                @foreach(var stadium in Model.StadiumList)
+                {
+                    <button class="btn btn-primary" onclick="showStadiumDetails(@stadium.Id)"></button>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content p-5">
+    <div class="card card-primary">
+        <div class="card-body row align-items-center justify-content-center" id="weatherDetailsContainer">
+            <div class="col-12" id="weatherDetailsContainer"></div>
+        </div>
+    </div>
+</section>
+
+@section Scripts
+{
+    <script>
+        self = this;
+        var weatherTypes = null;
+        var stadiumDetailsDataTable = null;
+
+        $(document).ready(function () {
+            showStadiumDetails(1); // TODO: bunu kaldır Mert, sana örnek olsun diye ekledim.
+        });
+
+        function showStadiumDetails(stadiumId)
+        {
+            $.ajax({
+                url: '@Url.Action("GetStadiumDetails")?stadiumId=' + stadiumId,
+                type: 'POST',
+                data: 'json',
+                cache: false,
+                success: (response) => {
+                    if(response)
+                    {
+                        weatherTypes = response.weatherTypes;
+
+                        if(response.stadiumDetailList)
+                        {
+                            $("#weatherDetailsContainer").empty();
+
+                            response.stadiumDetailList.forEach(d => createAndAppendDetails(d, stadiumId));
+                        }
+                    }
+
+                    console.log("success resp", response);
+                },
+                error: (response) => {
+                    console.log("error resp", response);
+                }
+            })
+        }
+
+        function createAndAppendDetails(stadiumDetails, stadiumId)
+        {
+            var container = document.createElement("div");
+            container.className = "col-12 row";
+
+            var labelContainer = document.createElement("div");
+            labelContainer.className = "col-12";
+
+            var label = document.createElement("label");
+            label.innerHTML = "Tarih:";
+
+            var span = document.createElement("span");
+            span.className = "pl-2";
+            span.innerHTML = new Date(stadiumDetails.day).toLocaleDateString();
+
+            labelContainer.append(label);
+            labelContainer.append(span);
+
+            var editButton = document.createElement("button");
+            editButton.className = "btn btn-primary m-3";
+            editButton.innerHTML = "Düzenle";
+            editButton.onclick = function() {
+                window.location.replace("/Stadium/Edit?stadiumId=" + stadiumId + "&dateStr=" + new Date(stadiumDetails.day).toLocaleDateString());
+            }
+            labelContainer.appendChild(editButton);
+
+            container.append(labelContainer);
+
+            var table = document.createElement("table");
+            table.className = 'col-12 table table-hover';
+
+            var thead = document.createElement("thead");
+
+            var trHour = createTableRow("Saat", stadiumDetails.hourlyDetails.map(d => d.hour));
+
+            thead.appendChild(trHour);
+            table.appendChild(thead);
+
+            var tbody = document.createElement("tbody");
+
+            var trTemperature = createTableRow("Sıcaklık", stadiumDetails.hourlyDetails.map(d => d.temperature));
+            tbody.appendChild(trTemperature);
+
+            var trPrecipitation = createTableRow("Nem", stadiumDetails.hourlyDetails.map(d => d.precipitation));
+            tbody.appendChild(trPrecipitation);
+
+            var trWeatherType = createTableRow("Hava Durumu", stadiumDetails.hourlyDetails.map(d => weatherTypes.find(t => t.id === d.selectedWeatherTypeId)?.type));
+            tbody.appendChild(trWeatherType);
+
+            table.appendChild(tbody);
+
+            container.appendChild(table);
+
+            $("#weatherDetailsContainer").append(container);
+
+            var lineDivider = document.createElement("hr");
+            lineDivider.className = "col-12";
+
+            $("#weatherDetailsContainer").append(lineDivider);
+        }
+
+        function createTableRow(firstColumnText, dataArr)
+        {
+            var tr = document.createElement("tr");
+
+            if(firstColumnText !== '')
+            {
+                dataArr = [firstColumnText].concat(dataArr);
+            }
+
+            for (let i = 0; i < dataArr.length; i++) {
+                var th = document.createElement("td");
+
+                var text = document.createTextNode(dataArr[i]);
+
+                th.appendChild(text);
+                tr.appendChild(th);
+            }
+
+            return tr;
+        }
+    </script>
+}

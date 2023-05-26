@@ -12,13 +12,15 @@
         <div class="card-header">
             <h3 class="card-title">Hava durumu ekle</h3>
         </div>
-        <div class="card-body row align-items-center justify-content-center">
-            <div class="col-12 row align-items-center" id="detailContainer">
+        <div class="card-body row align-items-center justify-content-start">
+            <div class="col-4">
                 <div class="form-group mb-3">
                     <label>Gün</label>
                     <input type="date" id="detailDate" class="form-control" />
                 </div>
-                <div class="col-12 detailItem row border rounded mb-2">
+            </div>
+            <div class="col-12 row align-items-center m-0" id="detailContainer">
+                <div class="col-12 detailItem row border rounded mb-2" id="IDHERE">
                     <div class="col-4">
                         <div class="form-group mb-3">
                             <label>Saat</label>
@@ -44,16 +46,20 @@
                                 <option value="-1">Hava durumu seçin</option>
                                 @foreach (var weatherType in Model.WeatherTypes)
                                 {
-                                    <option value="@weatherType.Id">@weatherType.Description</option>
+                                    <option value="@weatherType.Id">@weatherType.Type</option>
                                 }
                             </select>
                         </div>
                     </div>
+                    <div class="col-2 row align-items-center">
+                        <button class="btn btn-block btn-danger" onclick="removeThis(event)"><i class="fa fa-minus mr-2"></i>Sil</button>
+                    </div>
                 </div>
             </div>
-            
-            <button class="btn btn-success mr-3" onclick="populate()"><i class="fa fa-plus mr-2"></i>Ekle</button>
-            <button class="btn btn-danger" onclick="removeLast()"><i class="fa fa-minus mr-2"></i>Remove Last</button>
+            <div class="col-12 row align-items-center justify-content-center">
+                <button class="btn btn-success mr-3" onclick="populate()"><i class="fa fa-plus mr-2"></i>Ekle</button>
+                <button class="btn btn-danger" onclick="removeLast()"><i class="fa fa-minus mr-2"></i>Sondan Sil</button>
+            </div>
         </div>
         <div class="card-footer">
             <button class="btn btn-primary" onclick="addDetails()">Kaydet</button>
@@ -65,9 +71,36 @@
 {
     <script>
         var container;
+        var day = null;
 
         $(document).ready(function() {
             container = $(".detailItem")[0].outerHTML;
+
+            let details = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.StadiumSavedDetail?.HourlyDetails))
+
+            if(details && details.length > 0)
+            {
+                day = '@Model.StadiumSavedDetail!.Day.ToString("yyyy-MM-dd")';
+
+                $('#detailDate').val(day);
+                $('#detailDate').attr('disabled', 'disabled');
+
+                $("#detailContainer").empty();
+
+                details.forEach((detail, idx, arr) =>
+                {
+                    let id = "detail_"+idx;
+
+                    let fillContainer = container.replace("IDHERE", id);
+
+                    $("#detailContainer").append(fillContainer);
+
+                    $('.hour', $('#' + id)).val(detail.Hour);
+                    $('.temperature', $('#' + id)).val(detail.Temperature);
+                    $('.precipitation', $('#' + id)).val(detail.Precipitation);
+                    $('.weatherType', $('#' + id)).val(detail.SelectedWeatherTypeId);
+                });
+            }
         });
 
         function populate()
@@ -86,19 +119,29 @@
             }
         }
 
+        function removeThis(event)
+        {
+            event.target.closest("div.detailItem").remove()
+        }
+
         function addDetails()
         {
             let items = $(".detailItem");
+            let date = $("#detailDate").val();
 
-            if(items.length > 0)
+            if(items.length > 0 && date !== '')
             {
                 var entities = Array.from(items).map(element => {
+                    console.log("elementId", element.id);
+                    let id = element.id == "IDHERE" ? null : element.id.substring(7);
+                    console.log("id", id);
                     let hour = $(".hour", element).val();
                     let temperature = $(".temperature", element).val();
                     let precipitation = $(".precipitation", element).val();
                     let weatherTypeId = $(".weatherType", element).val();
 
                     return {
+                        Id: id,
                         Hour: hour,
                         Temperature: temperature,
                         Precipitation: precipitation,
@@ -111,7 +154,11 @@
                     url: '@Url.Action("Edit")',
                     type: 'POST',
                     cache: false,
-                    data: JSON.stringify({ Day: $("#detailDate").val(), Entities: entities }),
+                    data: JSON.stringify({ 
+                        StadiumId: @Model.StadiumSavedDetail?.Id,
+                        Day: day === null ? date : day,
+                        Entities: entities
+                    }),
                     dataType: 'json',
                     contentType: 'application/json',
                     success: (response) => {
@@ -121,6 +168,10 @@
                         console.log("error", response);
                     }
                 });
+            }
+            else if (date === '')
+            {
+                alert("Gün bilgisi boş bırakılamaz");
             }
         }
     </script>

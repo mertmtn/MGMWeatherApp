@@ -5,6 +5,7 @@ namespace Entities.DTOs
 {
     public class StadiumDetailDTO:IDTO
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string CityName { get; set; }
         public DateTime MeasureDate { get; set; }
