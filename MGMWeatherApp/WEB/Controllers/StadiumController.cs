@@ -69,15 +69,15 @@ namespace WEB.Controllers
                     Day = DateTime.Now.AddDays(-2),
                     HourlyDetails = new()
                     {
-                        new StadiumEditEntity { Hour = 08, Temperature = 12, Precipitation = 76, SelectedWeatherTypeId = 3 },
-                        new StadiumEditEntity { Hour = 09, Temperature = 12, Precipitation = 71, SelectedWeatherTypeId = 3 },
-                        new StadiumEditEntity { Hour = 10, Temperature = 14, Precipitation = 72, SelectedWeatherTypeId = 2 },
-                        new StadiumEditEntity { Hour = 11, Temperature = 15, Precipitation = 73, SelectedWeatherTypeId = 1 },
-                        new StadiumEditEntity { Hour = 12, Temperature = 16, Precipitation = 74, SelectedWeatherTypeId = 3 },
-                        new StadiumEditEntity { Hour = 13, Temperature = 17, Precipitation = 75, SelectedWeatherTypeId = 5 },
-                        new StadiumEditEntity { Hour = 14, Temperature = 18, Precipitation = 76, SelectedWeatherTypeId = 6 },
-                        new StadiumEditEntity { Hour = 15, Temperature = 19, Precipitation = 77, SelectedWeatherTypeId = 3 },
-                        new StadiumEditEntity { Hour = 16, Temperature = 16, Precipitation = 78, SelectedWeatherTypeId = 3 }
+                        new StadiumEditEntity { Hour = 08, Temperature = 12, Humidity = 76, SelectedWeatherTypeId = 3 },
+                        new StadiumEditEntity { Hour = 09, Temperature = 12, Humidity = 71, SelectedWeatherTypeId = 3 },
+                        new StadiumEditEntity { Hour = 10, Temperature = 14, Humidity = 72, SelectedWeatherTypeId = 2 },
+                        new StadiumEditEntity { Hour = 11, Temperature = 15, Humidity = 73, SelectedWeatherTypeId = 1 },
+                        new StadiumEditEntity { Hour = 12, Temperature = 16, Humidity = 74, SelectedWeatherTypeId = 3 },
+                        new StadiumEditEntity { Hour = 13, Temperature = 17, Humidity = 75, SelectedWeatherTypeId = 5 },
+                        new StadiumEditEntity { Hour = 14, Temperature = 18, Humidity = 76, SelectedWeatherTypeId = 6 },
+                        new StadiumEditEntity { Hour = 15, Temperature = 19, Humidity = 77, SelectedWeatherTypeId = 3 },
+                        new StadiumEditEntity { Hour = 16, Temperature = 16, Humidity = 78, SelectedWeatherTypeId = 3 }
                     },
                 }
             };
@@ -127,15 +127,15 @@ namespace WEB.Controllers
                             Day = DateTime.Now.AddDays(0),
                             HourlyDetails = new()
                             {
-                                new StadiumEditEntity { Hour = 08, Temperature = 12, Precipitation = 76, SelectedWeatherTypeId = 3 },
-                                new StadiumEditEntity { Hour = 09, Temperature = 12, Precipitation = 71, SelectedWeatherTypeId = 3 },
-                                new StadiumEditEntity { Hour = 10, Temperature = 14, Precipitation = 72, SelectedWeatherTypeId = 2 },
-                                new StadiumEditEntity { Hour = 11, Temperature = 15, Precipitation = 73, SelectedWeatherTypeId = 1 },
-                                new StadiumEditEntity { Hour = 12, Temperature = 16, Precipitation = 74, SelectedWeatherTypeId = 3 },
-                                new StadiumEditEntity { Hour = 13, Temperature = 17, Precipitation = 75, SelectedWeatherTypeId = 5 },
-                                new StadiumEditEntity { Hour = 14, Temperature = 18, Precipitation = 76, SelectedWeatherTypeId = 6 },
-                                new StadiumEditEntity { Hour = 15, Temperature = 19, Precipitation = 77, SelectedWeatherTypeId = 3 },
-                                new StadiumEditEntity { Hour = 16, Temperature = 16, Precipitation = 78, SelectedWeatherTypeId = 3 },
+                                new StadiumEditEntity { Hour = 08, Temperature = 12, Humidity = 76, SelectedWeatherTypeId = 3 },
+                                new StadiumEditEntity { Hour = 09, Temperature = 12, Humidity = 71, SelectedWeatherTypeId = 3 },
+                                new StadiumEditEntity { Hour = 10, Temperature = 14, Humidity = 72, SelectedWeatherTypeId = 2 },
+                                new StadiumEditEntity { Hour = 11, Temperature = 15, Humidity = 73, SelectedWeatherTypeId = 1 },
+                                new StadiumEditEntity { Hour = 12, Temperature = 16, Humidity = 74, SelectedWeatherTypeId = 3 },
+                                new StadiumEditEntity { Hour = 13, Temperature = 17, Humidity = 75, SelectedWeatherTypeId = 5 },
+                                new StadiumEditEntity { Hour = 14, Temperature = 18, Humidity = 76, SelectedWeatherTypeId = 6 },
+                                new StadiumEditEntity { Hour = 15, Temperature = 19, Humidity = 77, SelectedWeatherTypeId = 3 },
+                                new StadiumEditEntity { Hour = 16, Temperature = 16, Humidity = 78, SelectedWeatherTypeId = 3 },
                             }
                         },
                         new StadiumDetailEntry
@@ -143,15 +143,15 @@ namespace WEB.Controllers
                             Day = DateTime.Now.AddDays(-1),
                             HourlyDetails = new()
                             {
-                                new StadiumEditEntity { Hour = 08, Temperature = 22, Precipitation = 66, SelectedWeatherTypeId = 3 },
-                                new StadiumEditEntity { Hour = 09, Temperature = 22, Precipitation = 61, SelectedWeatherTypeId = 3 },
-                                new StadiumEditEntity { Hour = 10, Temperature = 24, Precipitation = 62, SelectedWeatherTypeId = 2 },
-                                new StadiumEditEntity { Hour = 11, Temperature = 25, Precipitation = 63, SelectedWeatherTypeId = 1 },
-                                new StadiumEditEntity { Hour = 12, Temperature = 26, Precipitation = 64, SelectedWeatherTypeId = 3 },
-                                new StadiumEditEntity { Hour = 13, Temperature = 27, Precipitation = 65, SelectedWeatherTypeId = 5 },
-                                new StadiumEditEntity { Hour = 14, Temperature = 28, Precipitation = 66, SelectedWeatherTypeId = 6 },
-                                new StadiumEditEntity { Hour = 15, Temperature = 29, Precipitation = 67, SelectedWeatherTypeId = 3 },
-                                new StadiumEditEntity { Hour = 16, Temperature = 26, Precipitation = 68, SelectedWeatherTypeId = 3 },
+                                new StadiumEditEntity { Hour = 08, Temperature = 22, Humidity = 66, SelectedWeatherTypeId = 3 },
+                                new StadiumEditEntity { Hour = 09, Temperature = 22, Humidity = 61, SelectedWeatherTypeId = 3 },
+                                new StadiumEditEntity { Hour = 10, Temperature = 24, Humidity = 62, SelectedWeatherTypeId = 2 },
+                                new StadiumEditEntity { Hour = 11, Temperature = 25, Humidity = 63, SelectedWeatherTypeId = 1 },
+                                new StadiumEditEntity { Hour = 12, Temperature = 26, Humidity = 64, SelectedWeatherTypeId = 3 },
+                                new StadiumEditEntity { Hour = 13, Temperature = 27, Humidity = 65, SelectedWeatherTypeId = 5 },
+                                new StadiumEditEntity { Hour = 14, Temperature = 28, Humidity = 66, SelectedWeatherTypeId = 6 },
+                                new StadiumEditEntity { Hour = 15, Temperature = 29, Humidity = 67, SelectedWeatherTypeId = 3 },
+                                new StadiumEditEntity { Hour = 16, Temperature = 26, Humidity = 68, SelectedWeatherTypeId = 3 },
                             }
                         }
                     }

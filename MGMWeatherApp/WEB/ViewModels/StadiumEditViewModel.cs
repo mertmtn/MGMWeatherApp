@@ -32,7 +32,7 @@ namespace WEB.ViewModels
         public int? Id { get; set; }
         public int? Hour { get; set; }
         public double? Temperature { get; set; }
-        public int? Precipitation { get; set; }
+        public int? Humidity { get; set; }
         public int? SelectedWeatherTypeId { get; set; }
     }
 }

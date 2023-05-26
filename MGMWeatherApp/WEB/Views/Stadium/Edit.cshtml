@@ -36,7 +36,7 @@
                     <div class="col-4">
                         <div class="form-group mb-3">
                             <label>Nem</label>
-                            <input type="number" class="precipitation form-control" />
+                            <input type="number" class="humidity form-control" />
                         </div>
                     </div>
                     <div class="col-4">
@@ -97,7 +97,7 @@
 
                     $('.hour', $('#' + id)).val(detail.Hour);
                     $('.temperature', $('#' + id)).val(detail.Temperature);
-                    $('.precipitation', $('#' + id)).val(detail.Precipitation);
+                    $('.humidity', $('#' + id)).val(detail.Humidity);
                     $('.weatherType', $('#' + id)).val(detail.SelectedWeatherTypeId);
                 });
             }
@@ -137,14 +137,14 @@
                     console.log("id", id);
                     let hour = $(".hour", element).val();
                     let temperature = $(".temperature", element).val();
-                    let precipitation = $(".precipitation", element).val();
+                    let humidity = $(".humidity", element).val();
                     let weatherTypeId = $(".weatherType", element).val();
 
                     return {
                         Id: id,
                         Hour: hour,
                         Temperature: temperature,
-                        Precipitation: precipitation,
+                        Humidity: humidity,
                         SelectedWeatherTypeId: weatherTypeId
                     };
                 });
@@ -163,6 +163,7 @@
                     contentType: 'application/json',
                     success: (response) => {
                         console.log("success", response);
+                        window.location.replace("/Stadium/Index");
                     },
                     error: (response) => {
                         console.log("error", response);

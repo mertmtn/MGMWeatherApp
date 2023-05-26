@@ -148,8 +148,8 @@
             var trTemperature = createTableRow("Sıcaklık", stadiumDetails.hourlyDetails.map(d => d.temperature));
             tbody.appendChild(trTemperature);
 
-            var trPrecipitation = createTableRow("Nem", stadiumDetails.hourlyDetails.map(d => d.precipitation));
-            tbody.appendChild(trPrecipitation);
+            var trHumidity = createTableRow("Nem", stadiumDetails.hourlyDetails.map(d => d.humidity));
+            tbody.appendChild(trHumidity);
 
             var trWeatherType = createTableRow("Hava Durumu", stadiumDetails.hourlyDetails.map(d => weatherTypes.find(t => t.id === d.selectedWeatherTypeId)?.type));
             tbody.appendChild(trWeatherType);
