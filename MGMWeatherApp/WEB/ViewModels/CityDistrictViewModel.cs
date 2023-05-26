@@ -1,8 +1,13 @@
 ﻿namespace WEB.ViewModels
 {
-    public class CityDistrictViewModel
+    public class HomeIndexViewModel
     {
+        public List<City> Cities { get; set; }
 
+        public HomeIndexViewModel()
+        {
+            this.Cities = new List<City>();    
+        }
     }
 
     public class City

@@ -5,6 +5,7 @@ namespace WEB.ViewModels
     public class StadiumEditViewModel
     {
         public List<WeatherType> WeatherTypes { get; set; }
+        public StadiumSavedDetail? StadiumSavedDetail { get; set; }
 
         public StadiumEditViewModel()
         {
@@ -14,19 +15,24 @@ namespace WEB.ViewModels
 
     public class StadiumEditRequest
     {
-        public List<StadiumMeasureEntryViewModel> Entities { get; set; }
+        public int? StadiumId { get; set; }
+        public DateTime? Day { get; set; }
+        public List<StadiumEditEntity>? Entities { get; set; }
+    }
 
-        public StadiumEditRequest()
-        {
-            this.Entities = new List<StadiumMeasureEntryViewModel>();
-        }
+    public class StadiumSavedDetail
+    {
+        public int Id { get; set; }
+        public DateTime Day { get; set; }
+        public List<StadiumEditEntity>? HourlyDetails { get; set; }
     }
 
     public class StadiumEditEntity
     {
+        public int? Id { get; set; }
         public int? Hour { get; set; }
         public double? Temperature { get; set; }
-        public int? Precipitation { get; set; }
+        public int? Humidity { get; set; }
         public int? SelectedWeatherTypeId { get; set; }
     }
 }
