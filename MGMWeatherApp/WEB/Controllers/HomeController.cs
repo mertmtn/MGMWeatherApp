@@ -73,26 +73,22 @@ namespace WEB.Controllers
                     new WeatherDetailPerHourGap()
                     {
                         Day = "Çarşamba",
-                        HourGap = "13:00-14:00",
                         WeatherTypeName = "Güneşli",
                         Temperature = 13,
                         TemperatureFeelsLike = 14,
                         Humidity = 86,
-                        WindDirection = "Kuzey Batı",
-                        AverageWindSpeed = 6,
-                        MaxWindSpeed = 12
+                        WindSpeed = 12,
+                        Pressure = 32,
                     },
                     new WeatherDetailPerHourGap()
                     {
-                        Day = "Çarşamba",
-                        HourGap = "14:00-16:00",
+                        Day = "Perşembe",
                         WeatherTypeName = "Güneşli",
                         Temperature = 17,
                         TemperatureFeelsLike = 18,
                         Humidity = 82,
-                        WindDirection = "Kuzey",
-                        AverageWindSpeed = 8,
-                        MaxWindSpeed = 11
+                        WindSpeed = 11,
+                        Pressure = 32,
                     }
                 }
             };

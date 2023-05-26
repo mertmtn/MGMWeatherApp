@@ -14,14 +14,12 @@
 
     public class WeatherDetailPerHourGap
     {
-        public string? HourGap { get; set; }
         public string? Day { get; set; }
         public string? WeatherTypeName { get; set; }
         public int Temperature { get; set; }
         public int TemperatureFeelsLike { get; set; }
         public int Humidity { get; set; }
-        public string? WindDirection { get; set; }
-        public int AverageWindSpeed { get; set; }
-        public int MaxWindSpeed { get; set; }
+        public int WindSpeed { get; set; }
+        public int Pressure { get; set; }
     }
 }
