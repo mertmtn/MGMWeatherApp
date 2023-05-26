@@ -21,8 +21,7 @@ namespace Data.Concrete.EntityFramework
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-          
+        {          
             modelBuilder.ApplyConfiguration(new StadiumMapping());
             modelBuilder.ApplyConfiguration(new RegionMapping());
             modelBuilder.ApplyConfiguration(new WeatherTypeMapping());

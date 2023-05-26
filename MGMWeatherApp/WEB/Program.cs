@@ -12,9 +12,13 @@ builder.Services.AddTransient<IStadiumService, StadiumManager>();
 builder.Services.AddTransient<IStationService, StationManager>();
 builder.Services.AddTransient<IFihristService, FihristManager>();
 builder.Services.AddTransient<IStadiumMeasuringService, StadiumMeasuringManager>();
+builder.Services.AddTransient<ICityDistrictMeasuringService, CityDistrictMeasuringManager>();
+builder.Services.AddTransient<ICoordinateService, CoordinateManager>();
 
+builder.Services.AddTransient<ICityDistrictMeasuringDal, EfCityDistrictMeasuringDal>();
+builder.Services.AddTransient<ICoordinateDal, EfCoordinateDal>();
 builder.Services.AddTransient<IStadiumDal, EfStadiumDal>();
-builder.Services.AddTransient<IStadiumDal, EfStadiumDal>();
+builder.Services.AddTransient<IStadiumMeasuringDal, EfStadiumMeasuringDal>();
 builder.Services.AddTransient<IFihristDal, EfFihristDal>();
 builder.Services.AddTransient<IStationDal, EfStationDal>();
 

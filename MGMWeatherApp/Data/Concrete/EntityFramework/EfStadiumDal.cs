@@ -17,6 +17,7 @@ namespace Data.Concrete.EntityFramework
                        on stadium.CityId equals city.PlaceId
                        select new StadiumDetailDTO
                        {
+                           Id = stadium.Id,
                            CityName = city.Name,
                            Name = stadium.Name
                        };
