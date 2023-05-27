@@ -9,11 +9,13 @@ namespace WEB.Controllers
     {
         private readonly IStadiumService _stadiumService;
         private readonly IFihristService _fihristService;
+        private readonly IStadiumMeasuringService _stadiumMeasuringService;
 
-        public StadiumController(IStadiumService stadiumService, IFihristService fihristService)
+        public StadiumController(IStadiumService stadiumService, IFihristService fihristService, IStadiumMeasuringService stadiumMeasuringService)
         {
             _stadiumService = stadiumService;
             _fihristService = fihristService;
+            _stadiumMeasuringService = stadiumMeasuringService;
         }
 
         public IActionResult Index()
@@ -22,7 +24,6 @@ namespace WEB.Controllers
             return View(new StadiumViewModel { StadiumList = stadiumList });
         }
 
-        ///TODO: Modal olacaksa partial view olabilir.
         public IActionResult Create()
         {
             var vm = new StadiumCreateViewModel()
@@ -34,7 +35,6 @@ namespace WEB.Controllers
             return View(vm);
         }
 
-        ///TODO: Modal olacaksa redirect belirtilebilir.
         [HttpPost]
         public IActionResult Create(StadiumCreateViewModel stadiumViewModel)
         {
@@ -55,7 +55,6 @@ namespace WEB.Controllers
             }
         }
 
-        ///TODO: Modal olacaksa partial view olabilir.
         public IActionResult Edit(int? stadiumId, string dateStr)
         {
             var vm = new StadiumEditViewModel()
@@ -79,33 +78,39 @@ namespace WEB.Controllers
                     },
                 }
             };
+
             return View(vm);
         }
 
-        ///TODO: Modal olacaksa redirect belirtilebilir.
+
         [HttpPost]
         public IActionResult Edit([FromBody] StadiumEditRequest request)
         {
             try
             {
-                // request.Entities içindeki itemların Id bilgisi varsa mevcutta olan bir detay bilgisi kaydediliyordur.
-                // Id null ise yeni eklenecektir.
-                // listenen silinen veriler de göz önüne alınmalı, stadyum ölçümü olan ve request içinde
-                // bulunmayan kayıtlar DB'de de silinmelidir.
-                // day bilgisi ile bu sorguları yapabilirsin. Day bilgisinin değiştirilmesine izin verilmeyecek front-end'de.
+                if (_stadiumMeasuringService.CheckStadiumMeasure(DateOnly.FromDateTime(request.Day.Value), request.StadiumId.Value).Data)
+                {
+                    _stadiumMeasuringService.DeleteStadiumMeasureByDayAndStadium(DateOnly.FromDateTime(request.Day.Value), request.StadiumId.Value);
+                }
 
-                //var result = _stadiumService.Add(new Stadium
-                //{
-                //    Id = request.Id,
-                //    Name = request.Name,
-                //    CityId = request.CityId
-                //});
+                foreach (var item in request.Entities)
+                {
+                    _stadiumMeasuringService.Add(new StadiumMeasuring
+                    {
+                        ExpectedWeatherTypeId = item.SelectedWeatherTypeId.Value,
+                        Hour = item.Hour.Value,
+                        Temperature = item.Temperature.Value,
+                        Humidity = item.Humidity.Value,
+                        MeasureDate = DateOnly.FromDateTime(request.Day.Value),
+                        StadiumId = request.StadiumId.Value
+                    });
+                }
                 return Json(new { });
             }
             catch (Exception ex)
             {
-                return Json(ex);
-                throw;
+                ViewBag.ErrorMessage = ex.Message;
+                return Json(ViewBag.ErrorMessage);
             }
         }
 
@@ -129,48 +134,33 @@ namespace WEB.Controllers
         public JsonResult GetStadiumDetails(int? stadiumId)
         {
             try
-            {
-                var resp = _fihristService.GetAllWeatherType().Data.Select(x => new WeatherType { Id = x.Value, Type = x.Text }).ToList();
+            {               
+                var distictMeasureDays = _stadiumMeasuringService.GetDistinctDateByStadiumId(stadiumId.Value);
 
-                var vm = new StadiumDetailViewModel
+                var stadiumDetailEntryList = new List<StadiumDetailEntry>();
+                var stadiumDetailEntry = new StadiumDetailEntry();                               
+
+                foreach (var day in distictMeasureDays.Data)
                 {
-                    WeatherTypes = _fihristService.GetAllWeatherType().Data.Select(x => new WeatherType { Id = x.Value, Type = x.Text }).ToList(),
-                    StadiumDetailList = new()
+                    stadiumDetailEntry.Day = day;
+                    var weatherMeasuringResultListByStadium = _stadiumMeasuringService.GetStadiumMeasureByStadium(day, stadiumId.Value);
+                    foreach (var measureResult in weatherMeasuringResultListByStadium.Data)
                     {
-                        new StadiumDetailEntry
+                        var stadiumEditEntity = new StadiumEditEntity
                         {
-                            Day = DateTime.Now.AddDays(0),
-                            HourlyDetails = new()
-                            {
-                                new StadiumEditEntity { Hour = 08, Temperature = 12, Humidity = 76, SelectedWeatherTypeId = 3 },
-                                new StadiumEditEntity { Hour = 09, Temperature = 12, Humidity = 71, SelectedWeatherTypeId = 3 },
-                                new StadiumEditEntity { Hour = 10, Temperature = 14, Humidity = 72, SelectedWeatherTypeId = 2 },
-                                new StadiumEditEntity { Hour = 11, Temperature = 15, Humidity = 73, SelectedWeatherTypeId = 1 },
-                                new StadiumEditEntity { Hour = 12, Temperature = 16, Humidity = 74, SelectedWeatherTypeId = 3 },
-                                new StadiumEditEntity { Hour = 13, Temperature = 17, Humidity = 75, SelectedWeatherTypeId = 5 },
-                                new StadiumEditEntity { Hour = 14, Temperature = 18, Humidity = 76, SelectedWeatherTypeId = 6 },
-                                new StadiumEditEntity { Hour = 15, Temperature = 19, Humidity = 77, SelectedWeatherTypeId = 3 },
-                                new StadiumEditEntity { Hour = 16, Temperature = 16, Humidity = 78, SelectedWeatherTypeId = 3 },
-                            }
-                        },
-                        new StadiumDetailEntry
-                        {
-                            Day = DateTime.Now.AddDays(-1),
-                            HourlyDetails = new()
-                            {
-                                new StadiumEditEntity { Hour = 08, Temperature = 22, Humidity = 66, SelectedWeatherTypeId = 3 },
-                                new StadiumEditEntity { Hour = 09, Temperature = 22, Humidity = 61, SelectedWeatherTypeId = 3 },
-                                new StadiumEditEntity { Hour = 10, Temperature = 24, Humidity = 62, SelectedWeatherTypeId = 2 },
-                                new StadiumEditEntity { Hour = 11, Temperature = 25, Humidity = 63, SelectedWeatherTypeId = 1 },
-                                new StadiumEditEntity { Hour = 12, Temperature = 26, Humidity = 64, SelectedWeatherTypeId = 3 },
-                                new StadiumEditEntity { Hour = 13, Temperature = 27, Humidity = 65, SelectedWeatherTypeId = 5 },
-                                new StadiumEditEntity { Hour = 14, Temperature = 28, Humidity = 66, SelectedWeatherTypeId = 6 },
-                                new StadiumEditEntity { Hour = 15, Temperature = 29, Humidity = 67, SelectedWeatherTypeId = 3 },
-                                new StadiumEditEntity { Hour = 16, Temperature = 26, Humidity = 68, SelectedWeatherTypeId = 3 },
-                            }
-                        }
+                            Hour = measureResult.Hour,
+                            Temperature = measureResult.Temperature,
+                            Humidity = measureResult.Humidity,
+                            SelectedWeatherTypeId = measureResult.ExpectedWeatherTypeId
+                        };
+                        stadiumDetailEntry.HourlyDetails.Add(stadiumEditEntity);
                     }
-                };
+                    stadiumDetailEntryList.Add(stadiumDetailEntry);
+                }
+
+                var vm = new StadiumDetailViewModel();
+                vm.StadiumDetailList = stadiumDetailEntryList;
+                vm.WeatherTypes = _fihristService.GetAllWeatherType().Data.Select(x => new WeatherType { Id = x.Value, Type = x.Text }).ToList();
 
                 return Json(vm);
             }

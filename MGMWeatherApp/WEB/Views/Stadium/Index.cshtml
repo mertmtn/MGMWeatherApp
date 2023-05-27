@@ -1,15 +1,15 @@
-﻿@model  WEB.ViewModels.StadiumViewModel
+﻿@model WEB.ViewModels.StadiumViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Stadyum Listesi</h1>
-
 <p>
     <a asp-action="Create">Stadyum Tanım</a>
-    <br/> 
+    <br />
 </p>
+
 <table class="table">
     <thead>
         <tr>
@@ -26,16 +26,15 @@
                     @item.Name
                 </td>
                 <td>
-                    @item.Name
+                    @item.CityName
                 </td>
                 <td>
                     @Html.ActionLink("Ölçüm Girişi", "EntryMeasure", new {  id=item.Id   }) |
                     @Html.ActionLink("Düzenle", "Edit", new {  id=item.Id  }) |
-                    @Html.ActionLink("Detay", "Details", new {  id=item.Id  }) 
+                    @Html.ActionLink("Detay", "Details", new {  id=item.Id  })
                 </td>
             </tr>
             <tr>
-                
             </tr>
         }
     </tbody>
@@ -49,9 +48,10 @@
         </div>
         <div class="card-body row align-items-center justify-content-center">
             <div class="col-12 row align-items-center">
-                @foreach(var stadium in Model.StadiumList)
+                @foreach (var stadium in Model.StadiumList)
                 {
-                    <button class="btn btn-primary" onclick="showStadiumDetails(@stadium.Id)"></button>
+                    <button class="btn btn-primary" onclick="showStadiumDetails(@stadium.Id)">@stadium.Name / @stadium.CityName</button>
+                    @Html.Raw("&nbsp;")
                 }
             </div>
         </div>
@@ -67,30 +67,23 @@
 </section>
 
 @section Scripts
-{
+    {
     <script>
         self = this;
         var weatherTypes = null;
         var stadiumDetailsDataTable = null;
 
-        $(document).ready(function () {
-            showStadiumDetails(1); // TODO: bunu kaldır Mert, sana örnek olsun diye ekledim.
-        });
-
-        function showStadiumDetails(stadiumId)
-        {
+        function showStadiumDetails(stadiumId) {
             $.ajax({
                 url: '@Url.Action("GetStadiumDetails")?stadiumId=' + stadiumId,
                 type: 'POST',
                 data: 'json',
                 cache: false,
                 success: (response) => {
-                    if(response)
-                    {
+                    if (response) {
                         weatherTypes = response.weatherTypes;
 
-                        if(response.stadiumDetailList)
-                        {
+                        if (response.stadiumDetailList) {
                             $("#weatherDetailsContainer").empty();
 
                             response.stadiumDetailList.forEach(d => createAndAppendDetails(d, stadiumId));
@@ -105,8 +98,7 @@
             })
         }
 
-        function createAndAppendDetails(stadiumDetails, stadiumId)
-        {
+        function createAndAppendDetails(stadiumDetails, stadiumId) {
             var container = document.createElement("div");
             container.className = "col-12 row";
 
@@ -126,7 +118,7 @@
             var editButton = document.createElement("button");
             editButton.className = "btn btn-primary m-3";
             editButton.innerHTML = "Düzenle";
-            editButton.onclick = function() {
+            editButton.onclick = function () {
                 window.location.replace("/Stadium/Edit?stadiumId=" + stadiumId + "&dateStr=" + new Date(stadiumDetails.day).toLocaleDateString());
             }
             labelContainer.appendChild(editButton);
@@ -166,12 +158,10 @@
             $("#weatherDetailsContainer").append(lineDivider);
         }
 
-        function createTableRow(firstColumnText, dataArr)
-        {
+        function createTableRow(firstColumnText, dataArr) {
             var tr = document.createElement("tr");
 
-            if(firstColumnText !== '')
-            {
+            if (firstColumnText !== '') {
                 dataArr = [firstColumnText].concat(dataArr);
             }
 

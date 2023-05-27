@@ -15,7 +15,7 @@ namespace WEB.ViewModels
 
     public class StadiumDetailEntry
     {
-        public DateTime? Day { get; set; }
+        public DateOnly? Day { get; set; }
         public List<StadiumEditEntity> HourlyDetails { get; set; }
 
         public StadiumDetailEntry()
