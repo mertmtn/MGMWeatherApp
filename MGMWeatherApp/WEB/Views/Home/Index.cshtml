@@ -38,6 +38,10 @@
                         <label>Boylam:</label>
                         <span></span>
                     </div>
+                    <div class="col-3" id="region">
+                        <label>Bölge:</label>
+                        <span></span>
+                    </div>
                 </div>
                 <div class="col-12">
                     <table class="table table-hover" id="weatherDetailsTable">
@@ -88,8 +92,13 @@
                     {
                         data: 'day',
                         render: function(data, type, row) {
-                            if(type === 'sort') return data;
+                            if(type === 'sort')
+                            {
+                                let initial = data.split(/\./);
 
+                                return [initial[1], initial[0], initial[2]].join('/');
+                            }
+                            console.log("dat", row.day);
                             return `<div class="d-flex flex-column align-items-center justify-content-center w-100">
                                 <span>${row.day}</span>
                             </div>`;
@@ -99,10 +108,20 @@
                         data: 'weatherTypeName'
                     },
                     {
-                        data: 'temperature'
+                        data: 'temperature',
+                        render: function(data, type, row) {
+                            if(type === 'sort') return data;
+
+                            return data.toFixed(1);
+                        }
                     },
                     {
-                        data: 'temperatureFeelsLike'
+                        data: 'temperatureFeelsLike',
+                        render: function (data, type, row) {
+                            if (type === 'sort') return data;
+
+                            return data.toFixed(1);
+                        }
                     },
                     {
                         data: 'humidity'
@@ -137,6 +156,7 @@
                     if(response.weatherDetails) {
                         $("#longitude span").html(response.longitude);
                         $("#latitude span").html(response.latitude);
+                        $("#region span").html(response.region);
 
                         response.weatherDetails.forEach(detail =>
                         {

@@ -37,7 +37,7 @@ namespace WEB.Controllers
             {
                 vm.WeatherDetails.Add(new WeatherDetailPerHourGap
                 {
-                    Day = measureResult.MeasureDate.ToShortDateString(),
+                    Day = measureResult.MeasureDate.ToString("dd.MM.yyyy"),
                     WeatherTypeName = measureResult.WeatherType.Type,
                     Temperature = measureResult.Temperature,
                     TemperatureFeelsLike = measureResult.FeelsTemperature,
