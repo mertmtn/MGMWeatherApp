@@ -15,58 +15,13 @@ namespace WEB.Controllers
 
         public JsonResult GetCityList()
         {
-            var cities = new List<City>()
-            {
-                new City()
-                {
-                    Id = 0,
-                    Name = "İl 1"
-                },
-                new City()
-                {
-                    Id = 1,
-                    Name = "İl 2"
-                },
-                new City()
-                {
-                    Id = 2,
-                    Name = "İl 3"
-                },
-            };
-
-            return Json(cities);
-            //return Json(_fihristService.GetAllCity());
+            var cities = _fihristService.GetAllCity().Data.Select(x => new City { Id = x.Value, Name = x.Text}); 
+            return Json(cities); 
         }
 
         public JsonResult GetDistrictList(int cityId)
-        {
-            var districts = new List<District>();
-
-            if (cityId == 0)
-            {
-                districts = new List<District>()
-                {
-                    new District(){ Id = 1, Name = "İlçe 1" },
-                    new District(){ Id = 2, Name = "İlçe 2" },
-                };
-            }
-            else if(cityId == 1)
-            {
-                districts = new List<District>()
-                {
-                    new District(){ Id = 3, Name = "İlçe 3" },
-                    new District(){ Id = 4, Name = "İlçe 4" },
-                };
-            }
-            else
-            {
-                districts = new List<District>()
-                {
-                    new District(){ Id = 5, Name = "İlçe 5" },
-                    new District(){ Id = 6, Name = "İlçe 6" },
-                };
-            }
-
+        { 
+            var districts = _fihristService.GetAllDistrict(cityId).Data.Select(x => new District { Id = x.Value, Name = x.Text });
             return Json(districts);
         }
     }

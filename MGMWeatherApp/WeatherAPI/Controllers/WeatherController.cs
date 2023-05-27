@@ -6,17 +6,17 @@ namespace WeatherAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class WeatherController : ControllerBase
     {
-       private IWeatherService _weatherBusiness { get; set; }
+        private IWeatherService _weatherBusiness { get; set; }
 
-        public WeatherForecastController(IWeatherService weatherBusiness)
+        public WeatherController(IWeatherService weatherBusiness)
         {
             _weatherBusiness = weatherBusiness;
         }
         [Route("/GetWeatherForecast")]
         [HttpPost]
-        public Task<Root> Get([FromBody]WeatherRequest request)
+        public Task<Root> Get([FromBody] WeatherRequest request)
         {
             return _weatherBusiness.GetAllCountry(request);
         }
@@ -26,6 +26,16 @@ namespace WeatherAPI.Controllers
         public Task<Root> Add(int cityId)
         {
             return _weatherBusiness.AddMeasuresByPlace(cityId);
+        }
+
+        [Route("/AddByCity")]
+        [HttpPost]
+        public Task<string> AddMeasuresByCity(int cityId)
+        {
+             return _weatherBusiness.AddMeasuresByCity(cityId);
+
+            
+
         }
     }
 }

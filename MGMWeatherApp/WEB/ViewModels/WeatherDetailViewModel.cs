@@ -6,6 +6,10 @@
         public double Latitude { get; set; }
         public double Longitude { get; set; }
 
+        public string? City { get; set; }
+        public string? District { get; set; }
+        public string? Region { get; set; }
+
         public WeatherDetailViewModel()
         {
             this.WeatherDetails = new List<WeatherDetailPerHourGap>();
@@ -16,10 +20,10 @@
     {
         public string? Day { get; set; }
         public string? WeatherTypeName { get; set; }
-        public int Temperature { get; set; }
-        public int TemperatureFeelsLike { get; set; }
-        public int Humidity { get; set; }
-        public int WindSpeed { get; set; }
-        public int Pressure { get; set; }
+        public double Temperature { get; set; }
+        public double TemperatureFeelsLike { get; set; }
+        public double Humidity { get; set; }
+        public double WindSpeed { get; set; }
+        public double Pressure { get; set; }
     }
 }

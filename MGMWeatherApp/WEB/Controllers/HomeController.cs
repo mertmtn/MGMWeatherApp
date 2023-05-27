@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using System.Xml.Linq;
+﻿using Business.Abstract;
+using Microsoft.AspNetCore.Mvc;
 using WEB.ViewModels;
-using static System.Net.WebRequestMethods;
 
 namespace WEB.Controllers
 {
     public class HomeController : Controller
     {
-
-        public HomeController()
+        private readonly ICityDistrictMeasuringService _cityDistrictMeasuringService;
+        private readonly ICoordinateService _coordinateService;
+        public HomeController(ICityDistrictMeasuringService cityDistrictMeasuringService, ICoordinateService coordinateService)
         {
-            
+            _cityDistrictMeasuringService = cityDistrictMeasuringService;
+            _coordinateService = coordinateService;
         }
 
         public IActionResult Index()
@@ -21,34 +21,31 @@ namespace WEB.Controllers
 
         public JsonResult GetWeatherByCityAndDistrict(int? cityId, int? districtId)
         {
+            var weatherMeasuringResultList = _cityDistrictMeasuringService.GetMeasureResultByPlaceId(districtId ?? 82);
+            var coordinates = _coordinateService.GetCoordinateByPlaceId(districtId ?? 82);
+           
             var vm = new WeatherDetailViewModel()
             {
-                Latitude = 39.9727,
-                Longitude = 32.8637,
-                WeatherDetails = new()
-                {
-                    new WeatherDetailPerHourGap()
-                    {
-                        Day = "Çarşamba",
-                        WeatherTypeName = "Güneşli",
-                        Temperature = 13,
-                        TemperatureFeelsLike = 14,
-                        Humidity = 86,
-                        WindSpeed = 12,
-                        Pressure = 32,
-                    },
-                    new WeatherDetailPerHourGap()
-                    {
-                        Day = "Perşembe",
-                        WeatherTypeName = "Güneşli",
-                        Temperature = 17,
-                        TemperatureFeelsLike = 18,
-                        Humidity = 82,
-                        WindSpeed = 11,
-                        Pressure = 32,
-                    }
-                }
+                Latitude = coordinates.Data.Latitude,
+                Longitude = coordinates.Data.Longitude,
+                City="İstanbul",
+                District="Fatih",
+                Region="Marmara Bölgesi"
             };
+
+            foreach (var measureResult in weatherMeasuringResultList.Data)
+            {
+                vm.WeatherDetails.Add(new WeatherDetailPerHourGap
+                {
+                    Day = measureResult.MeasureDate.ToShortDateString(),
+                    WeatherTypeName = measureResult.WeatherType.Type,
+                    Temperature = measureResult.Temperature,
+                    TemperatureFeelsLike = measureResult.FeelsTemperature,
+                    Humidity = measureResult.Humidity,
+                    WindSpeed = measureResult.WindSpeed,
+                    Pressure = measureResult.Pressure
+                });
+            }
 
             return Json(vm);
         }

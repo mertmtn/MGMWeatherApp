@@ -7,5 +7,7 @@ namespace WeatherAPI.Business
         Task<Root> GetAllCountry(WeatherRequest request);
 
         Task<Root> AddMeasuresByPlace(int placeId);
+
+        Task<string> AddMeasuresByCity(int cityId);
     }
 }

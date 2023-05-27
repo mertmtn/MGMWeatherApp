@@ -12,10 +12,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 builder.Services.AddTransient<ICityDistrictMeasuringService, CityDistrictMeasuringManager>();
 builder.Services.AddTransient<ICityDistrictMeasuringDal, EfCityDistrictMeasuringDal>();
+
 builder.Services.AddTransient<ICoordinateService, CoordinateManager>();
 builder.Services.AddTransient<ICoordinateDal, EfCoordinateDal>();
+
+builder.Services.AddTransient<IFihristService, FihristManager>(); 
+builder.Services.AddTransient<IFihristDal, EfFihristDal>();
+
 builder.Services.Configure<OpenWeatherMapApiInfo>(builder.Configuration.GetSection("OpenWeatherMapApiInfo"));
 builder.Services.AddHttpClient<WeatherHttpClient>();
 builder.Services.AddTransient<IWeatherService, WeatherBusiness>();

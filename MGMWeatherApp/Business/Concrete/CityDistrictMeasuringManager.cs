@@ -8,7 +8,7 @@ namespace Business.Concrete
 {
     public class CityDistrictMeasuringManager: ICityDistrictMeasuringService
     {
-        private ICityDistrictMeasuringDal _cityDistrictMeasuringDal;
+        private readonly ICityDistrictMeasuringDal _cityDistrictMeasuringDal;
 
         public CityDistrictMeasuringManager(ICityDistrictMeasuringDal cityDistrictMeasuringDal)
         {
@@ -19,6 +19,11 @@ namespace Business.Concrete
         {
             _cityDistrictMeasuringDal.Add(measure);
             return new SuccessResult("Ölçüm eklendi");
+        }
+
+        public IDataResult<List<CityDistrictMeasuring>> GetMeasureResultByPlaceId(int placeId)
+        {            
+            return new SuccessDataResult<List<CityDistrictMeasuring>>(_cityDistrictMeasuringDal.GetMeasureResultByPlaceId(placeId),200);            
         }
     }
 }

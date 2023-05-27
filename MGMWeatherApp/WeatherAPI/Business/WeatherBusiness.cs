@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 using System.Text.Json;
 using WeatherAPI.HttpClients;
 using WeatherAPI.Models.Options;
@@ -12,14 +13,17 @@ namespace WeatherAPI.Business
     {
         private ICityDistrictMeasuringService _cityDistrictMeasuringService { get; }
         private ICoordinateService _coordinateService { get; }
+        private IFihristService _fihristService { get; }
+
         private WeatherHttpClient _weatherHttpClient { get; }
         private OpenWeatherMapApiInfo _apiInfo { get; }
-        public WeatherBusiness(WeatherHttpClient weatherHttpClient, IOptions<OpenWeatherMapApiInfo> apiInfoOption, ICityDistrictMeasuringService cityDistrictMeasuringService, ICoordinateService coordinateService)
+        public WeatherBusiness(WeatherHttpClient weatherHttpClient, IOptions<OpenWeatherMapApiInfo> apiInfoOption, ICityDistrictMeasuringService cityDistrictMeasuringService, ICoordinateService coordinateService, IFihristService fihristService)
         {
             _weatherHttpClient = weatherHttpClient;
             _apiInfo = apiInfoOption.Value;
             _coordinateService = coordinateService;
             _cityDistrictMeasuringService = cityDistrictMeasuringService;
+            _fihristService = fihristService;
         } 
 
 
@@ -39,8 +43,7 @@ namespace WeatherAPI.Business
 
         public async Task<Root> AddMeasuresByPlace(int placeId)
         {
-            var coordinates = _coordinateService.GetCoordinateByPlaceId(placeId);
-             
+            var coordinates = _coordinateService.GetCoordinateByPlaceId(placeId);             
 
             var requestLink = _apiInfo.OpenWeatherMapApiLink.OneCall;
             requestLink = requestLink.Replace("[Lattitude]", coordinates.Data.Latitude.ToString());
@@ -53,15 +56,14 @@ namespace WeatherAPI.Business
 
             foreach (var item in list.daily)
             {
-                var code = Convert.ToInt32(item.weather[0].id);
-                var weatherTypeId = 1;
-                weatherTypeId = GetWeatherTypeId(code, weatherTypeId);
+                var code = Convert.ToInt32(item.weather[0].id);               
+                var weatherTypeId = GetWeatherTypeId(code);
                 _cityDistrictMeasuringService.AddMeasureByPlace(
                     new CityDistrictMeasuring
                     {
                         PlaceId=placeId,
                         Humidity = item.humidity,
-                        MeasureDate = DateOnly.FromDateTime(item.Date),
+                     //   MeasureDate = DateOnly.FromDateTime(item.Date),
                         Pressure = item.pressure,
                         FeelsTemperature = item.feels_like.day - 273,
                         WindSpeed = item.wind_speed,
@@ -73,8 +75,50 @@ namespace WeatherAPI.Business
             return list;
         }
 
-        private static int GetWeatherTypeId(int code, int weatherTypeId)
+        public async Task<string> AddMeasuresByCity(int cityId)
         {
+            var discrits = _fihristService.GetAllDistrict(cityId).Data;
+
+            foreach (var district in discrits)
+            {
+                var coordinates = _coordinateService.GetCoordinateByPlaceId(district.Value);
+
+                var requestLink = _apiInfo.OpenWeatherMapApiLink.OneCall;
+                requestLink = requestLink.Replace("[Lattitude]", coordinates.Data.Latitude.ToString());
+                requestLink = requestLink.Replace("[Longtitude]", coordinates.Data.Longitude.ToString());
+                requestLink = requestLink.Replace("[ApiKey]", _apiInfo.ApiKey);
+
+                var responseString = await _weatherHttpClient.GetAsync(requestLink);
+
+                var list = JsonSerializer.Deserialize<Root>(responseString);
+
+                foreach (var item in list.daily)
+                {
+                    var code = Convert.ToInt32(item.weather[0].id);
+                    var weatherTypeId = GetWeatherTypeId(code);
+                    _cityDistrictMeasuringService.AddMeasureByPlace(
+                        new CityDistrictMeasuring
+                        {
+                            PlaceId = district.Value,
+                            Humidity = item.humidity,
+                            MeasureDate = DateOnly.FromDateTime(item.Date),
+                            Pressure = item.pressure,
+                            FeelsTemperature = item.feels_like.day - 273,
+                            WindSpeed = item.wind_speed,
+                            Temperature = item.temp.day - 273,
+                            WeatherTypeId = weatherTypeId
+                        });
+                }
+               
+            }
+            return "";
+           
+        }
+
+
+        private static int GetWeatherTypeId(int code )
+        {
+            var weatherTypeId = 1;
             switch (code)
             {
                 case 801:
@@ -110,7 +154,7 @@ namespace WeatherAPI.Business
         }
     }
 
-
+    //  public DateTime Date => UnixTimeStampToDateTime(this.dt);
     public class Current
     {
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
@@ -129,7 +173,7 @@ namespace WeatherAPI.Business
         public int pressure { get; set; }
         public int humidity { get; set; }
         public double dew_point { get; set; }
-        public int uvi { get; set; }
+        public double uvi { get; set; }
         public int clouds { get; set; }
         public int visibility { get; set; }
         public double wind_speed { get; set; }
@@ -164,8 +208,8 @@ namespace WeatherAPI.Business
         public List<Weather> weather { get; set; }
         public int clouds { get; set; }
         public double pop { get; set; }
-        public double rain { get; set; }
         public double uvi { get; set; }
+        public double? rain { get; set; }
     }
 
     public class FeelsLike
@@ -176,6 +220,8 @@ namespace WeatherAPI.Business
         public double morn { get; set; }
     }
 
+  
+
     public class Root
     {
         public double lat { get; set; }
@@ -183,7 +229,7 @@ namespace WeatherAPI.Business
         public string timezone { get; set; }
         public int timezone_offset { get; set; }
         public Current current { get; set; }
-
+       
         public List<Daily> daily { get; set; }
     }
 
@@ -204,5 +250,5 @@ namespace WeatherAPI.Business
         public string description { get; set; }
         public string icon { get; set; }
     }
-
+ 
 }

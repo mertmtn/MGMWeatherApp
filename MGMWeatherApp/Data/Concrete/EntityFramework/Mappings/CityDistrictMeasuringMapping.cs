@@ -9,7 +9,7 @@ namespace Data.Concrete.EntityFramework.Mappings
         public void Configure(EntityTypeBuilder<CityDistrictMeasuring> builder)
         {
             builder.HasKey(c => new {  c.PlaceId, c.MeasureDate });
-            //builder.Property(c => c.Id).ValueGeneratedOnAdd();   
+            
             builder.HasOne(c => c.CityDistrict).WithMany(c => c.CityDistrictMeasuring).HasForeignKey(u => u.PlaceId);
         }
     }

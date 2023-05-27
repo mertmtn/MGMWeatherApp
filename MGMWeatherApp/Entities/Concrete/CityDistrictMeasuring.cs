@@ -12,8 +12,9 @@ namespace Entities.Concrete
         public double Pressure { get; set; }
         public double WindSpeed { get; set; }
         public int PlaceId { get; set; }
+               public int WeatherTypeId { get; set; }
         public virtual CityDistrict CityDistrict { get; set; } 
         public virtual WeatherType WeatherType { get; set; }
-        public int WeatherTypeId { get; set; }
+ 
     }
 }
