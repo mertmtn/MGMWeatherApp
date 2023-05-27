@@ -8,17 +8,24 @@ namespace WeatherAPI.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-       private IWeatherBusiness _weatherBusiness { get; set; }
+       private IWeatherService _weatherBusiness { get; set; }
 
-        public WeatherForecastController(IWeatherBusiness weatherBusiness)
+        public WeatherForecastController(IWeatherService weatherBusiness)
         {
             _weatherBusiness = weatherBusiness;
-        }   
-
-        [HttpPost(Name = "GetWeatherForecast")]
+        }
+        [Route("/GetWeatherForecast")]
+        [HttpPost]
         public Task<Root> Get([FromBody]WeatherRequest request)
         {
             return _weatherBusiness.GetAllCountry(request);
+        }
+
+        [Route("/Add")]
+        [HttpPost]
+        public Task<Root> Add(int cityId)
+        {
+            return _weatherBusiness.AddMeasuresByPlace(cityId);
         }
     }
 }

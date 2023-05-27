@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using Entities.Concrete;
 using Entities.DTOs;
 
 namespace Data.Concrete.EntityFramework.Mappings
@@ -12,4 +11,6 @@ namespace Data.Concrete.EntityFramework.Mappings
             builder.HasNoKey().ToView("vwGetStadiumDetailDTO"); 
         }
     }
+     
+
 }

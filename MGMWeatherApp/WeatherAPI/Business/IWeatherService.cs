@@ -2,8 +2,10 @@
 
 namespace WeatherAPI.Business
 {
-    public interface IWeatherBusiness
+    public interface IWeatherService
     {
         Task<Root> GetAllCountry(WeatherRequest request);
+
+        Task<Root> AddMeasuresByPlace(int placeId);
     }
 }

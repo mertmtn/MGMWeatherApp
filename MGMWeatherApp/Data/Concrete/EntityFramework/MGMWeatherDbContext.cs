@@ -27,7 +27,11 @@ namespace Data.Concrete.EntityFramework
             modelBuilder.ApplyConfiguration(new WeatherTypeMapping());
             modelBuilder.ApplyConfiguration(new CoordinateMapping());
             modelBuilder.ApplyConfiguration(new StadiumDetailDTOMapping());
+            modelBuilder.ApplyConfiguration(new StationListDTOMapping());
             modelBuilder.ApplyConfiguration(new CityDistrictMapping());
+            modelBuilder.ApplyConfiguration(new CoordinateDTOMapping());
+            modelBuilder.ApplyConfiguration(new StationMapping());
+            modelBuilder.ApplyConfiguration(new CityDistrictMeasuringMapping());
             base.OnModelCreating(modelBuilder);
         }
 
@@ -36,7 +40,12 @@ namespace Data.Concrete.EntityFramework
         public DbSet<Region> Regions { get; set; }
         public DbSet<WeatherType> WeatherTypes { get; set; }
         public DbSet<Coordinate> Coordinates { get; set; }
+        public DbSet<StadiumMeasuring> StadiumMeasuring { get; set; }
+        public DbSet<CityDistrictMeasuring> CityDistrictMeasuring { get; set; }
 
+        public DbSet<StationListDTO> StationListDTO { get; set; }
         public DbSet<StadiumDetailDTO> StadiumDetailDTO { get; set; }
+        public DbSet<CoordinateDTO> CoordinateDTO { get; set; }
+
     }
 }

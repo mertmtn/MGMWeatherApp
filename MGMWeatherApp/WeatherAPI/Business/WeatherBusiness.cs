@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Business.Abstract;
+using Entities.Concrete;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
 using WeatherAPI.HttpClients;
 using WeatherAPI.Models.Options;
@@ -6,15 +8,20 @@ using WeatherAPI.Models.Request;
 
 namespace WeatherAPI.Business
 {
-    public class WeatherBusiness:IWeatherBusiness
+    public class WeatherBusiness : IWeatherService
     {
+        private ICityDistrictMeasuringService _cityDistrictMeasuringService { get; }
+        private ICoordinateService _coordinateService { get; }
         private WeatherHttpClient _weatherHttpClient { get; }
         private OpenWeatherMapApiInfo _apiInfo { get; }
-        public WeatherBusiness(WeatherHttpClient weatherHttpClient, IOptions<OpenWeatherMapApiInfo> weatherApiInfoOptions)
+        public WeatherBusiness(WeatherHttpClient weatherHttpClient, IOptions<OpenWeatherMapApiInfo> apiInfoOption, ICityDistrictMeasuringService cityDistrictMeasuringService, ICoordinateService coordinateService)
         {
-            _apiInfo = weatherApiInfoOptions.Value;
             _weatherHttpClient = weatherHttpClient;
-        }
+            _apiInfo = apiInfoOption.Value;
+            _coordinateService = coordinateService;
+            _cityDistrictMeasuringService = cityDistrictMeasuringService;
+        } 
+
 
         public async Task<Root> GetAllCountry(WeatherRequest request)
         {
@@ -22,12 +29,85 @@ namespace WeatherAPI.Business
             requestLink = requestLink.Replace("[Lattitude]", request.Lattitude.ToString());
             requestLink = requestLink.Replace("[Longtitude]", request.Longtitude.ToString());
             requestLink = requestLink.Replace("[ApiKey]", _apiInfo.ApiKey);
- 
+
             var responseString = await _weatherHttpClient.GetAsync(requestLink);
 
-            var list = JsonSerializer.Deserialize<Root>(responseString); 
+            var list = JsonSerializer.Deserialize<Root>(responseString);
             return list;
-        }       
+        }
+
+
+        public async Task<Root> AddMeasuresByPlace(int placeId)
+        {
+            var coordinates = _coordinateService.GetCoordinateByPlaceId(placeId);
+             
+
+            var requestLink = _apiInfo.OpenWeatherMapApiLink.OneCall;
+            requestLink = requestLink.Replace("[Lattitude]", coordinates.Data.Latitude.ToString());
+            requestLink = requestLink.Replace("[Longtitude]", coordinates.Data.Longitude.ToString());
+            requestLink = requestLink.Replace("[ApiKey]", _apiInfo.ApiKey);
+
+            var responseString = await _weatherHttpClient.GetAsync(requestLink);
+
+            var list = JsonSerializer.Deserialize<Root>(responseString);
+
+            foreach (var item in list.daily)
+            {
+                var code = Convert.ToInt32(item.weather[0].id);
+                var weatherTypeId = 1;
+                weatherTypeId = GetWeatherTypeId(code, weatherTypeId);
+                _cityDistrictMeasuringService.AddMeasureByPlace(
+                    new CityDistrictMeasuring
+                    {
+                        PlaceId=placeId,
+                        Humidity = item.humidity,
+                        MeasureDate = DateOnly.FromDateTime(item.Date),
+                        Pressure = item.pressure,
+                        FeelsTemperature = item.feels_like.day - 273,
+                        WindSpeed = item.wind_speed,
+                        Temperature = item.temp.day - 273,
+                        WeatherTypeId = weatherTypeId
+                    });
+            } 
+
+            return list;
+        }
+
+        private static int GetWeatherTypeId(int code, int weatherTypeId)
+        {
+            switch (code)
+            {
+                case 801:
+                    weatherTypeId = 3;
+                    break;
+                case 803:
+                    weatherTypeId = 3;
+                    break;
+                case 800:
+                    weatherTypeId = 1; break;
+                case 804:
+                    weatherTypeId = 4; break;
+                case 500:
+                    weatherTypeId = 8; break;
+                case 504:
+                case 503:
+                case 502:
+                    weatherTypeId = 10; break;
+                case 600:
+                    weatherTypeId = 13; break;
+                case 701:
+                    weatherTypeId = 6; break;
+                case 711:
+                case 721:
+                    weatherTypeId = 7; break;
+                case 231:
+                    weatherTypeId = 17; break;
+                default:
+                    break;
+            }
+
+            return weatherTypeId;
+        }
     }
 
 
@@ -94,7 +174,7 @@ namespace WeatherAPI.Business
         public double night { get; set; }
         public double eve { get; set; }
         public double morn { get; set; }
-    }    
+    }
 
     public class Root
     {
@@ -103,7 +183,7 @@ namespace WeatherAPI.Business
         public string timezone { get; set; }
         public int timezone_offset { get; set; }
         public Current current { get; set; }
-   
+
         public List<Daily> daily { get; set; }
     }
 
@@ -124,5 +204,5 @@ namespace WeatherAPI.Business
         public string description { get; set; }
         public string icon { get; set; }
     }
- 
+
 }
