@@ -36,7 +36,8 @@ namespace Business.Concrete
 
         public IDataResult<List<DateOnly>> GetDistinctDateByStadiumId(int stadiumId)
         {
-            throw new NotImplementedException();
+            var result = _stadiumMeasuringDal.GetDistinctDateByStadiumId(stadiumId);
+            return new SuccessDataResult<List<DateOnly>>(result, 200);
         }
 
         public IDataResult<List<StadiumMeasuring>> GetStadiumMeasureByStadium(int stadiumId)

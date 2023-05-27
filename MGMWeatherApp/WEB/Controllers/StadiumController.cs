@@ -57,31 +57,33 @@ namespace WEB.Controllers
 
         public IActionResult Edit(int? stadiumId, string dateStr)
         {
-            var vm = new StadiumEditViewModel()
+            var vm = new StadiumEditViewModel();
+         
+            var stadiumSavedDetail = new StadiumSavedDetail();
+
+            stadiumSavedDetail.Day = DateOnly.FromDateTime(DateTime.Now);
+            if (!string.IsNullOrEmpty(dateStr))
             {
-                WeatherTypes = _fihristService.GetAllWeatherType().Data.Select(x => new WeatherType { Id = x.Value, Type = x.Text }).ToList(),
-                StadiumSavedDetail = new StadiumSavedDetail() // TODO: eğer update yapılırken bu stadyum detayları varsa buraya yüklenecek. DB'den.
+                stadiumSavedDetail.Id = stadiumId.Value;
+                stadiumSavedDetail.Day = DateOnly.Parse(dateStr);
+                var weatherMeasuringResultListByStadium = _stadiumMeasuringService.GetStadiumMeasureByStadium(stadiumSavedDetail.Day, stadiumId.Value);
+                foreach (var measureResult in weatherMeasuringResultListByStadium.Data)
                 {
-                    Id = 2, // TODO: burası StadiumId ile aynı olmalı normalde
-                    Day = DateTime.Now.AddDays(-2),
-                    HourlyDetails = new()
+                    var stadiumEditEntity = new StadiumEditEntity
                     {
-                        new StadiumEditEntity { Hour = 08, Temperature = 12, Humidity = 76, SelectedWeatherTypeId = 3 },
-                        new StadiumEditEntity { Hour = 09, Temperature = 12, Humidity = 71, SelectedWeatherTypeId = 3 },
-                        new StadiumEditEntity { Hour = 10, Temperature = 14, Humidity = 72, SelectedWeatherTypeId = 2 },
-                        new StadiumEditEntity { Hour = 11, Temperature = 15, Humidity = 73, SelectedWeatherTypeId = 1 },
-                        new StadiumEditEntity { Hour = 12, Temperature = 16, Humidity = 74, SelectedWeatherTypeId = 3 },
-                        new StadiumEditEntity { Hour = 13, Temperature = 17, Humidity = 75, SelectedWeatherTypeId = 5 },
-                        new StadiumEditEntity { Hour = 14, Temperature = 18, Humidity = 76, SelectedWeatherTypeId = 6 },
-                        new StadiumEditEntity { Hour = 15, Temperature = 19, Humidity = 77, SelectedWeatherTypeId = 3 },
-                        new StadiumEditEntity { Hour = 16, Temperature = 16, Humidity = 78, SelectedWeatherTypeId = 3 }
-                    },
-                }
-            };
-
+                        Hour = measureResult.Hour,
+                        Temperature = measureResult.Temperature,
+                        Humidity = measureResult.Humidity,
+                        SelectedWeatherTypeId = measureResult.ExpectedWeatherTypeId
+                    };
+                    stadiumSavedDetail.HourlyDetails.Add(stadiumEditEntity);
+                } 
+            }
+            
+            vm.StadiumSavedDetail = stadiumSavedDetail;
+            vm.WeatherTypes = _fihristService.GetAllWeatherType().Data.Select(x => new WeatherType { Id = x.Value, Type = x.Text }).ToList();
             return View(vm);
-        }
-
+        } 
 
         [HttpPost]
         public IActionResult Edit([FromBody] StadiumEditRequest request)
@@ -116,10 +118,12 @@ namespace WEB.Controllers
 
         public IActionResult Update(int? stadiumId)
         {
+            var result = _stadiumService.GetById(stadiumId.Value).Data;             
+
             var vm = new StadiumUpdateViewModel
             {
-                Name = "Patates",
-                CityId = 1
+                Name = result.Name,
+                CityId = result.CityId
             };
 
             return View(vm);
@@ -128,7 +132,20 @@ namespace WEB.Controllers
         [HttpPost]
         public IActionResult Update(StadiumUpdateViewModel vm)
         {
-            return RedirectToAction("Index");
+            try
+            {
+                var result = _stadiumService.Update(new Stadium
+                {
+                    Name = vm.Name,
+                    CityId = vm.CityId
+                });
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View(vm);
+            } 
         }
 
         public JsonResult GetStadiumDetails(int? stadiumId)

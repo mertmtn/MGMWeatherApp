@@ -23,7 +23,7 @@ namespace WEB.ViewModels
     public class StadiumSavedDetail
     {
         public int Id { get; set; }
-        public DateTime Day { get; set; }
+        public DateOnly Day { get; set; }
         public List<StadiumEditEntity>? HourlyDetails { get; set; }
     }
 
