@@ -137,7 +137,7 @@
         });
 
         function getWeatherDetails() {
-            self.weatherDetailsDataTable.clear();
+            self.weatherDetailsDataTable.clear().draw();
 
             let cityId = $('select.city').val();
             let districtId = $('select.district').val();

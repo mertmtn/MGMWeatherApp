@@ -3,6 +3,7 @@ using Core.Utilities.Results;
 using Data.Concrete.EntityFramework;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using WEB.ViewModels;
 
 namespace WEB.Controllers
@@ -91,6 +92,7 @@ namespace WEB.Controllers
         [HttpPost]
         public IActionResult Edit([FromBody] StadiumEditRequest request)
         {
+            bool isError = false;
             try
             {
                 var stadiumMeasuringList = new List<StadiumMeasuring>();
@@ -108,17 +110,16 @@ namespace WEB.Controllers
                 }
 
                 var result = _stadiumMeasuringService.UpdateStadiumMeasureByDayAndStadium(stadiumMeasuringList, request.Day, request.StadiumId.Value);
-                if (result.Success)
-                {
-                    return RedirectToAction("Index");
-                }
-                ViewBag.ErrorMessage = result.Message;
+
+                isError = !result.Success;
+
+                return Json(new { Message = result.Message, IsError = isError });
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = ex.InnerException;                
+                isError = true;
+                return Json(new { Message = ex.Message, IsError = isError });
             }
-            return View(request);
         }
 
         public IActionResult Update(int? id)
@@ -161,10 +162,10 @@ namespace WEB.Controllers
                 var distictMeasureDays = _stadiumMeasuringService.GetDistinctDateByStadiumId(stadiumId.Value);
 
                 var stadiumDetailEntryList = new List<StadiumDetailEntry>();
-                var stadiumDetailEntry = new StadiumDetailEntry();
 
                 foreach (var day in distictMeasureDays.Data)
                 {
+                    var stadiumDetailEntry = new StadiumDetailEntry();
                     stadiumDetailEntry.Day = day;
                     stadiumDetailEntry.HourlyDetails = new List<StadiumEditEntity>();
                     var weatherMeasuringResultListByStadium = _stadiumMeasuringService.GetStadiumMeasureByStadium(day, stadiumId.Value);

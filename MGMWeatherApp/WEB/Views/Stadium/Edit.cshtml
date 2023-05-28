@@ -8,6 +8,9 @@
             <h3 class="card-title">Hava durumu ekle</h3>
         </div>
         <div class="card-body row align-items-center justify-content-start">
+            <div class="col-12" id="errorListContainer" class="d-none">
+                <ul id="errorList"></ul>
+            </div>
             <div class="col-4">
                 <div class="form-group mb-3">
                     <label>Gün</label>
@@ -122,6 +125,7 @@
 
         function addDetails()
         {
+            $("#errorListContainer").addClass("d-none");
             let items = $(".detailItem");
             let date = $("#detailDate").val();
 
@@ -159,7 +163,16 @@
                     contentType: 'application/json',
                     success: (response) => {
                         console.log("success", response);
-                        window.location.replace("/Stadium/Index");
+                        if(response.isError !== false)
+                        {
+                            $("#errorListContainer").removeClass("d-none");
+                            $("#errorList").empty();
+                            $("#errorList").append(`<li>${response.message}</li>`);
+                        }
+                        else
+                        {
+                            window.location.replace("/Stadium/Index");
+                        }
                     },
                     error: (response) => {
                         console.log("error", response);
