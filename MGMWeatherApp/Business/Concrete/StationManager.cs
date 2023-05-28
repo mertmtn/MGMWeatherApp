@@ -3,7 +3,7 @@ using Core.Utilities.Results;
 using Core.Utilities.Results.Success;
 using Data.Abstract;
 using Entities.Concrete;
-using Entities.DTOs; 
+using Entities.DTOs;
 
 namespace Business.Concrete
 {
@@ -22,6 +22,10 @@ namespace Business.Concrete
             return new SuccessResult("İstasyon başarıyla eklendi.", 200);
         }
 
+        public IDataResult<StationListDTO> GetStationDetailById(int id)
+        {
+            return new SuccessDataResult<StationListDTO>(_stationDal.GetStationDetailById(id), 200);
+        }
 
         public IDataResult<List<StationListDTO>> GetStationListByCityId(int cityId)
         {

@@ -42,7 +42,7 @@ namespace Data.Concrete.EntityFramework
         public DbSet<Coordinate> Coordinates { get; set; }
         public DbSet<StadiumMeasuring> StadiumMeasuring { get; set; }
         public DbSet<CityDistrictMeasuring> CityDistrictMeasuring { get; set; }
-
+        public DbSet<Station> Station { get; set; }
         public DbSet<StationListDTO> StationListDTO { get; set; }
         public DbSet<StadiumDetailDTO> StadiumDetailDTO { get; set; }
         public DbSet<CoordinateDTO> CoordinateDTO { get; set; }

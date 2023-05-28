@@ -9,6 +9,7 @@ namespace Data.Concrete.EntityFramework.Mappings
         public void Configure(EntityTypeBuilder<StationListDTO> builder)
         {
             builder.HasNoKey().ToView("vwGetStationListDTO");
+            builder.Property(c => c.ICAO).IsRequired(false);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Business.Abstract;
+using Entities.Concrete;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using WEB.ViewModels;
 
 namespace WEB.Controllers
@@ -24,27 +24,44 @@ namespace WEB.Controllers
         public IActionResult Create()
         {
             var vm = new StationCreateViewModel();
-
             return View(vm);
         }
 
         [HttpPost]
         public IActionResult Create(StationCreateViewModel vm)
         {
-            return RedirectToAction("Index");
+            try
+            {
+                _stationService.Add(new Station
+                {
+                    Name = vm.Name ?? "",
+                    CityDistrictId = vm.SelectedDistrictId,
+                    GoogleMapLink = vm.GoogleMapsUrl ?? "",
+                    ICAO = vm.ICAO,
+                    StationNo = vm.StationNumber
+                });
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.InnerException.Message;
+                return View(vm);
+            }
         }
 
         public IActionResult Update(int? stationId)
         {
+            var result = _stationService.GetStationDetailById(stationId.Value).Data;
+
             var vm = new StationUpdateViewModel()
             {
-                Id = stationId ?? -1,
-                Name = "İstasyon adı",
-                SelectedCityId = 1,
-                SelectedDistrictId = 4,
-                GoogleMapsUrl = "googlemapsurl",
-                ICAO = "icao",
-                StationNumber = 123
+                Id = result.Id,
+                Name = result.StationName,
+                SelectedCityId = result.CityId,
+                SelectedDistrictId = result.DistrictId,
+                GoogleMapsUrl = result.GoogleMapLink,
+                ICAO = result.ICAO.ToString(),
+                StationNumber = result.StationNo
             };
 
             return View(vm);
@@ -53,33 +70,38 @@ namespace WEB.Controllers
         [HttpPost]
         public IActionResult Update(StationUpdateViewModel vm)
         {
-            var deneme = vm.SelectedDistrictId;
-            return RedirectToAction("Index");
+            try
+            {
+                _stationService.Update(new Station
+                {
+                    Id = vm.Id,
+                    Name = vm.Name ?? "",
+                    CityDistrictId = vm.SelectedDistrictId,
+                    GoogleMapLink = vm.GoogleMapsUrl ?? "",
+                    ICAO = vm.ICAO,
+                    StationNo = vm.StationNumber
+                });
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.InnerException.Message;
+                return View(vm);
+            }
         }
 
         public JsonResult GetStations(int? cityId)
         {
-            var stations = new List<StationUpdateViewModel>
+            var stations = new List<StationUpdateViewModel>();
+            _stationService.GetStationListByCityId(cityId.Value).Data.ForEach(x => stations.Add(new StationUpdateViewModel
             {
-                new StationUpdateViewModel
-                {
-                    Id = 1,
-                    Name = "İstasyon 1",
-                    ICAO = "TRK",
-                    District = "Kadıköy",
-                    GoogleMapsUrl = "https://www.google.com/maps/search/?api=1&query=40.124,32.9992",
-                    StationNumber = 12345
-                },
-                new StationUpdateViewModel
-                {
-                    Id = 2,
-                    Name = "İstasyon 2",
-                    ICAO = "TRK 2",
-                    District = "Beşiktaş",
-                    GoogleMapsUrl = "https://www.google.com/maps/search/?api=1&query=40.124,32.9992",
-                    StationNumber = 4566
-                }
-            };
+                Id = x.Id,
+                Name = x.StationName,
+                ICAO = x.ICAO ?? "-",
+                District = x.DistrictName,
+                GoogleMapsUrl = x.GoogleMapLink,
+                StationNumber = x.StationNo
+            }));
 
             return Json(stations);
         }

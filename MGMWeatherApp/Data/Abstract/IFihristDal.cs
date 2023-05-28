@@ -1,4 +1,5 @@
-﻿using Entities.DTOs;
+﻿using Entities.Concrete;
+using Entities.DTOs;
 
 namespace Data.Abstract
 {
@@ -13,5 +14,6 @@ namespace Data.Abstract
         public List<DistrictSelectListDTO> GetAllDistrict(int cityId);
 
         public List<WeatherTypeSelectListDTO> GetAllWeatherType();
+        public CityDistrict GetPlaceInfoByDistrictId(int placeId);
     }
 }

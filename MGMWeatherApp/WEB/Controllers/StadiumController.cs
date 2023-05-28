@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Core.Utilities.Results;
+using Data.Concrete.EntityFramework;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Mvc;
 using WEB.ViewModels;
@@ -58,14 +60,15 @@ namespace WEB.Controllers
         public IActionResult Edit(int? stadiumId, string dateStr)
         {
             var vm = new StadiumEditViewModel();
-         
+
             var stadiumSavedDetail = new StadiumSavedDetail();
 
             stadiumSavedDetail.Day = DateOnly.FromDateTime(DateTime.Now);
             if (!string.IsNullOrEmpty(dateStr))
             {
-                stadiumSavedDetail.Id = stadiumId.Value;
+
                 stadiumSavedDetail.Day = DateOnly.Parse(dateStr);
+                stadiumSavedDetail.HourlyDetails = new List<StadiumEditEntity>();
                 var weatherMeasuringResultListByStadium = _stadiumMeasuringService.GetStadiumMeasureByStadium(stadiumSavedDetail.Day, stadiumId.Value);
                 foreach (var measureResult in weatherMeasuringResultListByStadium.Data)
                 {
@@ -77,48 +80,50 @@ namespace WEB.Controllers
                         SelectedWeatherTypeId = measureResult.ExpectedWeatherTypeId
                     };
                     stadiumSavedDetail.HourlyDetails.Add(stadiumEditEntity);
-                } 
+                }
             }
-            
+            stadiumSavedDetail.Id = stadiumId.Value;
             vm.StadiumSavedDetail = stadiumSavedDetail;
             vm.WeatherTypes = _fihristService.GetAllWeatherType().Data.Select(x => new WeatherType { Id = x.Value, Type = x.Text }).ToList();
             return View(vm);
-        } 
+        }
 
         [HttpPost]
         public IActionResult Edit([FromBody] StadiumEditRequest request)
         {
             try
             {
-                if (_stadiumMeasuringService.CheckStadiumMeasure(DateOnly.FromDateTime(request.Day.Value), request.StadiumId.Value).Data)
-                {
-                    _stadiumMeasuringService.DeleteStadiumMeasureByDayAndStadium(DateOnly.FromDateTime(request.Day.Value), request.StadiumId.Value);
-                }
-
+                var stadiumMeasuringList = new List<StadiumMeasuring>();
                 foreach (var item in request.Entities)
                 {
-                    _stadiumMeasuringService.Add(new StadiumMeasuring
+                    stadiumMeasuringList.Add(new StadiumMeasuring
                     {
                         ExpectedWeatherTypeId = item.SelectedWeatherTypeId.Value,
                         Hour = item.Hour.Value,
                         Temperature = item.Temperature.Value,
                         Humidity = item.Humidity.Value,
-                        MeasureDate = DateOnly.FromDateTime(request.Day.Value),
+                        MeasureDate = request.Day,
                         StadiumId = request.StadiumId.Value
                     });
                 }
-                return Json(new { });
+
+                var result = _stadiumMeasuringService.UpdateStadiumMeasureByDayAndStadium(stadiumMeasuringList, request.Day, request.StadiumId.Value);
+                if (result.Success)
+                {
+                    return RedirectToAction("Index");
+                }
+                ViewBag.ErrorMessage = result.Message;
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = ex.Message;
-                return Json(ViewBag.ErrorMessage);
+                ViewBag.ErrorMessage = ex.InnerException;                
             }
+            return View(request);
         }
 
-        public IActionResult Update(int? stadiumId)
+        public IActionResult Update(int? id)
         {
-            var result = _stadiumService.GetById(stadiumId.Value).Data;             
+            var result = _stadiumService.GetById(id.Value).Data;
 
             var vm = new StadiumUpdateViewModel
             {
@@ -136,6 +141,7 @@ namespace WEB.Controllers
             {
                 var result = _stadiumService.Update(new Stadium
                 {
+                    Id = vm.Id,
                     Name = vm.Name,
                     CityId = vm.CityId
                 });
@@ -143,23 +149,24 @@ namespace WEB.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = ex.Message;
+                ViewBag.ErrorMessage = ex.InnerException.Message;
                 return View(vm);
-            } 
+            }
         }
 
         public JsonResult GetStadiumDetails(int? stadiumId)
         {
             try
-            {               
+            {
                 var distictMeasureDays = _stadiumMeasuringService.GetDistinctDateByStadiumId(stadiumId.Value);
 
                 var stadiumDetailEntryList = new List<StadiumDetailEntry>();
-                var stadiumDetailEntry = new StadiumDetailEntry();                               
+                var stadiumDetailEntry = new StadiumDetailEntry();
 
                 foreach (var day in distictMeasureDays.Data)
                 {
                     stadiumDetailEntry.Day = day;
+                    stadiumDetailEntry.HourlyDetails = new List<StadiumEditEntity>();
                     var weatherMeasuringResultListByStadium = _stadiumMeasuringService.GetStadiumMeasureByStadium(day, stadiumId.Value);
                     foreach (var measureResult in weatherMeasuringResultListByStadium.Data)
                     {

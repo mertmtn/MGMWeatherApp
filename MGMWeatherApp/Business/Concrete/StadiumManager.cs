@@ -43,13 +43,7 @@ namespace Business.Concrete
         {
             _stadiumDal.Update(stadium);
             return new SuccessResult("Stadyum başarıyla güncellendi.", 200);
-        }
-
-        IDataResult<Stadium> IStadiumService.GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
+        } 
         public IDataResult<StadiumDetailDTO> GetStadiumDetailById(int id)
         {
             return new SuccessDataResult<StadiumDetailDTO>(_stadiumDal.GetStadiumDetailById(id), 200);

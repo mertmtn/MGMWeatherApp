@@ -51,5 +51,11 @@ namespace Business.Concrete
             var result = _stadiumMeasuringDal.GetAll(x => x.StadiumId == stadiumId && x.MeasureDate == measuringDate);
             return new SuccessDataResult<List<StadiumMeasuring>>(result, 200);
         }
+        public IResult UpdateStadiumMeasureByDayAndStadium(List<StadiumMeasuring> stadiumMeasuringList, DateOnly measuringDay, int stadiumId)
+        {
+           return _stadiumMeasuringDal.UpdateStadiumMeasureByDayAndStadium(stadiumMeasuringList, measuringDay, stadiumId);
+          
+        }
+
     }
 }

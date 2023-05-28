@@ -28,6 +28,12 @@ namespace Data.Concrete.EntityFramework
                 .Select(x => new DistrictSelectListDTO { Value = x.PlaceId, Text = x.Name }).ToList();
         }
 
+        public CityDistrict GetPlaceInfoByDistrictId(int placeId)
+        {
+            using var context = new MGMWeatherDbContext();
+            return context.CityDistricts.AsNoTracking().Where(x => x.PlaceId == placeId).Include(x => x.City).ThenInclude(x => x.Region).First(); 
+        }
+
         public List<RegionSelectListDTO> GetAllRegion()
         {
             using var context = new MGMWeatherDbContext();

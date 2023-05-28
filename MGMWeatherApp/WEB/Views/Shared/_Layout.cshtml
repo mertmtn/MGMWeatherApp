@@ -66,6 +66,21 @@
         <!-- /.navbar -->
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
+            @if (!string.IsNullOrEmpty(ViewBag?.ErrorMessage))
+            {
+                <section class="content">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">HATA</h3>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li>@ViewBag?.ErrorMessage</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            }
             @RenderBody()
         </div>
         <!-- /.content-wrapper -->

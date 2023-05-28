@@ -12,7 +12,7 @@ namespace Entities.Concrete
 
         public int CityDistrictId { get; set; }
 
-        public int ICAO { get; set; }
+        public string ICAO { get; set; }
 
         public string GoogleMapLink { get; set; }
 

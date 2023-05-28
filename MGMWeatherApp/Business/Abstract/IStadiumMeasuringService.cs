@@ -12,5 +12,7 @@ namespace Business.Abstract
         IDataResult<List<StadiumMeasuring>> GetStadiumMeasureByStadium(DateOnly measuringDate, int stadiumId);
         IDataResult<List<DateOnly>> GetDistinctDateByStadiumId( int stadiumId);
         IResult DeleteStadiumMeasureByDayAndStadium(DateOnly measuringDate, int stadiumId);
+
+        IResult UpdateStadiumMeasureByDayAndStadium(List<StadiumMeasuring> stadiumMeasuringList, DateOnly measuringDay, int stadiumId);
     }
 }

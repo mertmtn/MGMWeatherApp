@@ -3,6 +3,7 @@ using System;
 using Data.Concrete.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Concrete.EntityFramework.Migrations
 {
     [DbContext(typeof(MGMWeatherDbContext))]
-    partial class MGMWeatherDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230528002608_changing-column")]
+    partial class changingcolumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -237,6 +240,7 @@ namespace Data.Concrete.EntityFramework.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("ICAO")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -449,38 +453,6 @@ namespace Data.Concrete.EntityFramework.Migrations
 
             modelBuilder.Entity("Entities.DTOs.StationListDTO", b =>
                 {
-                    b.Property<int>("CityId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CityName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("DistrictId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("DistrictName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("GoogleMapLink")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ICAO")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("StationName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("StationNo")
-                        .HasColumnType("integer");
-
                     b.ToTable((string)null);
 
                     b.ToView("vwGetStationListDTO", (string)null);

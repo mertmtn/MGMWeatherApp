@@ -2,6 +2,7 @@
 using Core.Utilities.Results;
 using Core.Utilities.Results.Success;
 using Data.Abstract;
+using Entities.Concrete;
 using Entities.DTOs;
 
 namespace Business.Concrete
@@ -38,6 +39,11 @@ namespace Business.Concrete
         public IDataResult<List<WeatherTypeSelectListDTO>> GetAllWeatherType()
         {
             return new SuccessDataResult<List<WeatherTypeSelectListDTO>>(_fihristDal.GetAllWeatherType(), 200);
+        }
+
+        public IDataResult<CityDistrict> GetPlaceInfoByDistrictId(int placeId)
+        {
+            return new SuccessDataResult<CityDistrict>(_fihristDal.GetPlaceInfoByDistrictId(placeId), 200);
         }
     }
 }

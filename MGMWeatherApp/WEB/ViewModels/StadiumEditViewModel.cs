@@ -16,7 +16,7 @@ namespace WEB.ViewModels
     public class StadiumEditRequest
     {
         public int? StadiumId { get; set; }
-        public DateTime? Day { get; set; }
+        public DateOnly Day { get; set; }
         public List<StadiumEditEntity>? Entities { get; set; }
     }
 

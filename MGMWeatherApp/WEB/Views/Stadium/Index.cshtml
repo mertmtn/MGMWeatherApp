@@ -5,11 +5,11 @@
 }
 
 <h1>Stadyum Listesi</h1>
+
 <p>
     <a asp-action="Create">Stadyum Tanım</a>
     <br />
 </p>
-
 <table class="table">
     <thead>
         <tr>
@@ -29,9 +29,10 @@
                     @item.CityName
                 </td>
                 <td>
-                    @Html.ActionLink("Ölçüm Girişi", "EntryMeasure", new {  id=item.Id   }) |
-                    @Html.ActionLink("Düzenle", "Edit", new {  stadiumId=item.Id  }) |
-                    @Html.ActionLink("Detay", "Details", new {  id=item.Id  })
+                    @Html.ActionLink("Ölçüm Girişi", "Edit", new {  stadiumId=item.Id   }) |
+                    @Html.ActionLink("Düzenle", "Update", new {  id=item.Id  }) |
+                    @Html.ActionLink("Detay", "Details", new {  id=item.Id  }) |
+                    <a href="javascript:void(0)" onclick="showStadiumDetails(@item.Id)">Ölçümleri Listele</a>
                 </td>
             </tr>
             <tr>
@@ -39,24 +40,6 @@
         }
     </tbody>
 </table>
-
-
-<section class="content p-5">
-    <div class="card card-primary">
-        <div class="card-header">
-            <h3 class="card-title">Stadyumlar</h3>
-        </div>
-        <div class="card-body row align-items-center justify-content-center">
-            <div class="col-12 row align-items-center">
-                @foreach (var stadium in Model.StadiumList)
-                {
-                    <button class="btn btn-primary" onclick="showStadiumDetails(@stadium.Id)">@stadium.Name / @stadium.CityName</button>
-                    @Html.Raw("&nbsp;")
-                }
-            </div>
-        </div>
-    </div>
-</section>
 
 <section class="content p-5">
     <div class="card card-primary">
@@ -71,7 +54,7 @@
     <script>
         self = this;
         var weatherTypes = null;
-        var stadiumDetailsDataTable = null;
+        var stadiumDetailsDataTable = null; 
 
         function showStadiumDetails(stadiumId) {
             $.ajax({

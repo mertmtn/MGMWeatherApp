@@ -38,6 +38,10 @@
                         <label>Boylam:</label>
                         <span></span>
                     </div>
+                    <div class="col-3" id="region">
+                        <label>Bölge:</label>
+                        <span></span>
+                    </div>
                 </div>
                 <div class="col-12">
                     <table class="table table-hover" id="weatherDetailsTable">
@@ -60,7 +64,7 @@
 </section>
 
 @section Scripts
-{
+    {
     <script>
         let weatherDetailsDataTable;
 
@@ -69,14 +73,13 @@
         $(document).ready(() => {
             getCities(() => fillCitySelect("#select-city", -1));
 
-            $('select.district').on('change', function(e) {
-                if(e.target.value > -1)
-                {
+            $('select.district').on('change', function (e) {
+                if (e.target.value > -1) {
                     getWeatherDetails();
                 }
             });
 
-            $('select.city').on('change', function(e) {
+            $('select.city').on('change', function (e) {
                 console.log("change city");
                 getDistricts(e.target.value, () => fillDistrictSelect("#select-district", -1));
             });
@@ -87,22 +90,36 @@
                 columns: [
                     {
                         data: 'day',
-                        render: function(data, type, row) {
-                            if(type === 'sort') return data;
+                        render: function (data, type, row) {
+                            if (type === 'sort') {
+                                let initial = data.split(/\./);
 
+                                return [initial[1], initial[0], initial[2]].join('/');
+                            }
+                            console.log("dat", row.day);
                             return `<div class="d-flex flex-column align-items-center justify-content-center w-100">
-                                <span>${row.day}</span>
-                            </div>`;
+                                        <span>${row.day}</span>
+                                    </div>`;
                         }
                     },
                     {
                         data: 'weatherTypeName'
                     },
                     {
-                        data: 'temperature'
+                        data: 'temperature',
+                        render: function (data, type, row) {
+                            if (type === 'sort') return data;
+
+                            return data.toFixed(1);
+                        }
                     },
                     {
-                        data: 'temperatureFeelsLike'
+                        data: 'temperatureFeelsLike',
+                        render: function (data, type, row) {
+                            if (type === 'sort') return data;
+
+                            return data.toFixed(1);
+                        }
                     },
                     {
                         data: 'humidity'
@@ -118,9 +135,8 @@
 
             console.log("init", self.weatherDetailsDataTable);
         });
-         
-        function getWeatherDetails()
-        {
+
+        function getWeatherDetails() {
             self.weatherDetailsDataTable.clear();
 
             let cityId = $('select.city').val();
@@ -133,16 +149,16 @@
                 cache: false,
                 success: (response) => {
                     console.log("success resp", response);
-                        
-                    if(response.weatherDetails) {
+
+                    if (response.weatherDetails) {
                         $("#longitude span").html(response.longitude);
                         $("#latitude span").html(response.latitude);
+                        $("#region span").html(response.region);
 
-                        response.weatherDetails.forEach(detail =>
-                        {
+                        response.weatherDetails.forEach(detail => {
                             self.weatherDetailsDataTable.row.add(detail).draw();
                         });
-                        
+
                     }
                 },
                 error: (response) => {

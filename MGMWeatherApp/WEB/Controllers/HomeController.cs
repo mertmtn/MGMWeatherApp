@@ -8,10 +8,13 @@ namespace WEB.Controllers
     {
         private readonly ICityDistrictMeasuringService _cityDistrictMeasuringService;
         private readonly ICoordinateService _coordinateService;
-        public HomeController(ICityDistrictMeasuringService cityDistrictMeasuringService, ICoordinateService coordinateService)
+        private readonly IFihristService _fihristService;
+
+        public HomeController(ICityDistrictMeasuringService cityDistrictMeasuringService, ICoordinateService coordinateService, IFihristService fihristService)
         {
             _cityDistrictMeasuringService = cityDistrictMeasuringService;
             _coordinateService = coordinateService;
+            _fihristService = fihristService;
         }
 
         public IActionResult Index()
@@ -23,21 +26,21 @@ namespace WEB.Controllers
         {
             var weatherMeasuringResultList = _cityDistrictMeasuringService.GetMeasureResultByPlaceId(districtId ?? 82);
             var coordinates = _coordinateService.GetCoordinateByPlaceId(districtId ?? 82);
-           
+            var cityInfo = _fihristService.GetPlaceInfoByDistrictId(districtId ?? 82);
             var vm = new WeatherDetailViewModel()
             {
                 Latitude = coordinates.Data.Latitude,
                 Longitude = coordinates.Data.Longitude,
-                City="İstanbul",
-                District="Fatih",
-                Region="Marmara Bölgesi"
+                City = cityInfo.Data.City.Name,
+                District = cityInfo.Data.Name,
+                Region = cityInfo.Data.City.Region.Name
             };
 
             foreach (var measureResult in weatherMeasuringResultList.Data)
             {
                 vm.WeatherDetails.Add(new WeatherDetailPerHourGap
                 {
-                    Day = measureResult.MeasureDate.ToShortDateString(),
+                    Day = measureResult.MeasureDate.ToString("dd.MM.yyyy"),
                     WeatherTypeName = measureResult.WeatherType.Type,
                     Temperature = measureResult.Temperature,
                     TemperatureFeelsLike = measureResult.FeelsTemperature,

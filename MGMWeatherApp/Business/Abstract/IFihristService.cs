@@ -1,4 +1,5 @@
 ﻿using Core.Utilities.Results;
+using Entities.Concrete;
 using Entities.DTOs;
 
 namespace Business.Abstract
@@ -14,5 +15,7 @@ namespace Business.Abstract
         public IDataResult<List<DistrictSelectListDTO>> GetAllDistrict(int cityId);
 
         public IDataResult<List<WeatherTypeSelectListDTO>> GetAllWeatherType();
+
+        public IDataResult<CityDistrict> GetPlaceInfoByDistrictId(int placeId);
     }
 }
