@@ -8,5 +8,7 @@
         public int SelectedCityId { get; set; }
         public int SelectedDistrictId { get; set; }
         public string? GoogleMapsUrl { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

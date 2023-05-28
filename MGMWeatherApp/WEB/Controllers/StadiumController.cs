@@ -1,9 +1,6 @@
 ﻿using Business.Abstract;
-using Core.Utilities.Results;
-using Data.Concrete.EntityFramework;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 using WEB.ViewModels;
 
 namespace WEB.Controllers
@@ -46,7 +43,8 @@ namespace WEB.Controllers
                 var result = _stadiumService.Add(new Stadium
                 {
                     Name = stadiumViewModel.Name ?? "",
-                    CityId = stadiumViewModel.SelectedCityId
+                    CityId = stadiumViewModel.SelectedCityId,
+                    IsActive = stadiumViewModel.IsActive
                 });
                 return RedirectToAction("Index", "Stadium");
             }
@@ -129,7 +127,8 @@ namespace WEB.Controllers
             var vm = new StadiumUpdateViewModel
             {
                 Name = result.Name,
-                CityId = result.CityId
+                CityId = result.CityId,
+                IsActive = result.IsActive
             };
 
             return View(vm);
@@ -144,7 +143,8 @@ namespace WEB.Controllers
                 {
                     Id = vm.Id,
                     Name = vm.Name,
-                    CityId = vm.CityId
+                    CityId = vm.CityId,
+                    IsActive = vm.IsActive
                 });
                 return RedirectToAction("Index");
             }

@@ -19,5 +19,7 @@ namespace Entities.DTOs
         public string? ICAO { get; set; }
 
         public string GoogleMapLink { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

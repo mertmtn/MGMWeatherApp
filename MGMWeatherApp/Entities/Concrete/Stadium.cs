@@ -12,6 +12,8 @@ namespace Entities.Concrete
         public int Id { get; set; }
         public string Name { get; set; }
         public int CityId { get; set; }
+
+        public bool IsActive { get; set; }
         public virtual CityDistrict CityDistrict { get; set; }
 
         public virtual ICollection<StadiumMeasuring> Measuring { get; set; }

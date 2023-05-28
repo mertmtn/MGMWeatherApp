@@ -5,10 +5,15 @@
 }
 @model StationViewModel
 
+
 <section class="content p-5">
     <div class="card card-primary">
         <div class="card-header">
             <h3 class="card-title">İstasyonlar</h3>
+        </div>
+        <br />
+        <div class="col-12">
+            <a href="@Url.Action("Create")" class="btn btn-primary">Yeni İstasyon Ekle</a>
         </div>
         <div class="card-body row">
             <div class="col-12">
@@ -32,15 +37,13 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <div class="col-12">
-                <a href="@Url.Action("Create")" class="btn btn-primary">Yeni İstasyon Ekle</a>
-            </div>
+
         </div>
     </div>
 </section>
 
 @section Scripts
-{
+    {
     <script>
         $(document).ready(() => {
             $('.select2bs4').select2({
@@ -52,8 +55,7 @@
             $("#select-city").on("change", (e) => getStations(e.target.value));
         });
 
-        function getStations(cityId)
-        {
+        function getStations(cityId) {
             $.ajax({
                 url: '@Url.Action("GetStations")?cityId=' + cityId,
                 type: 'GET',
@@ -61,9 +63,8 @@
                 success: (response) => {
                     $("#table-station > tbody").empty();
 
-                    if(response) {
-                        response.forEach(station =>
-                        {
+                    if (response) {
+                        response.forEach(station => {
                             console.log("station", station);
                             let tr = document.createElement("tr");
 
@@ -86,7 +87,7 @@
                             let districtText = document.createTextNode(station.district);
                             districtNumberTd.appendChild(districtText);
                             tr.appendChild(districtNumberTd);
-                            
+
                             let urlNumberTd = document.createElement("td");
                             let a = document.createElement("a");
                             a.setAttribute("href", station.googleMapsUrl);

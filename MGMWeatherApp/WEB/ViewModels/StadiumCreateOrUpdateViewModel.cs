@@ -8,6 +8,8 @@ namespace WEB.ViewModels
         public int Id { get; set; }
         public string Name { get; set; }
         public int CityId { get; set; }
+
+        public bool IsActive { get; set; }
     }
 
     public class StadiumCreateViewModel
@@ -17,6 +19,7 @@ namespace WEB.ViewModels
         public StadiumDetails StadiumDetails { get; set; }
         public List<WeatherType> WeatherTypes { get; set; }
         public DateTime MeasureDate { get; set; }
+        public bool IsActive { get; set; }
         public StadiumCreateViewModel()
         {
             this.StadiumDetails = new StadiumDetails();

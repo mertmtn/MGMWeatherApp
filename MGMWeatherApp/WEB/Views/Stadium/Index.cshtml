@@ -2,44 +2,55 @@
 
 @{
     ViewData["Title"] = "Index";
-}
+} 
+ 
+<section class="content p-5">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Stadyumlar</h3>
+        </div>
+        <br />
 
-<h1>Stadyum Listesi</h1>
+        <div class="card-body row">
+            <div class="col-12">
+                <a href="@Url.Action("Create")" class="btn btn-primary">Yeni Stadyum Ekle</a>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Stadyum Adı</th>
+                        <th>Şehir</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.StadiumList)
+                    {
+                        <tr>
+                            <td>
+                                @item.Name
+                            </td>
+                            <td>
+                                @item.CityName
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Edit","Stadium", new {  stadiumId=item.Id   })" class="btn btn-primary">Ölçüm Girişi</a>
+                                <a href="@Url.Action("Update","Stadium", new {  id=item.Id   })" class="btn btn-warning">Düzenle</a>
+                                <a href="javascript:void(0)" onclick="showStadiumDetails(@item.Id)" class="btn btn-success">Ölçümleri Listele</a>
+                            </td>
+                        </tr>
+                        <tr>
+                        </tr>
+                    }
+                </tbody>
+            </table>
 
-<p>
-    <a asp-action="Create">Stadyum Tanım</a>
-    <br />
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Stadyum Adı</th>
-            <th>Şehir</th>
-            <th>İşlemler</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.StadiumList)
-        {
-            <tr>
-                <td>
-                    @item.Name
-                </td>
-                <td>
-                    @item.CityName
-                </td>
-                <td>
-                    @Html.ActionLink("Ölçüm Girişi", "Edit", new {  stadiumId=item.Id   }) |
-                    @Html.ActionLink("Düzenle", "Update", new {  id=item.Id  }) |
-                    @Html.ActionLink("Detay", "Details", new {  id=item.Id  }) |
-                    <a href="javascript:void(0)" onclick="showStadiumDetails(@item.Id)">Ölçümleri Listele</a>
-                </td>
-            </tr>
-            <tr>
-            </tr>
-        }
-    </tbody>
-</table>
+        </div>
+    </div>
+</section>
+
+
+
 
 <section class="content p-5">
     <div class="card card-primary">

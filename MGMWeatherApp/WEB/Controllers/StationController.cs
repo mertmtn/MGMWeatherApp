@@ -38,7 +38,8 @@ namespace WEB.Controllers
                     CityDistrictId = vm.SelectedDistrictId,
                     GoogleMapLink = vm.GoogleMapsUrl ?? "",
                     ICAO = vm.ICAO,
-                    StationNo = vm.StationNumber
+                    StationNo = vm.StationNumber,
+                    IsActive = vm.IsActive,
                 });
                 return RedirectToAction("Index");
             }
@@ -61,7 +62,8 @@ namespace WEB.Controllers
                 SelectedDistrictId = result.DistrictId,
                 GoogleMapsUrl = result.GoogleMapLink,
                 ICAO = result.ICAO,
-                StationNumber = result.StationNo
+                StationNumber = result.StationNo,
+                IsActive =result.IsActive
             };
 
             return View(vm);
@@ -79,7 +81,8 @@ namespace WEB.Controllers
                     CityDistrictId = vm.SelectedDistrictId,
                     GoogleMapLink = vm.GoogleMapsUrl ?? "",
                     ICAO = vm.ICAO,
-                    StationNo = vm.StationNumber
+                    StationNo = vm.StationNumber,
+                    IsActive = vm.IsActive
                 });
                 return RedirectToAction("Index");
             }

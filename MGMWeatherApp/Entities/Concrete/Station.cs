@@ -16,6 +16,8 @@ namespace Entities.Concrete
 
         public string GoogleMapLink { get; set; }
 
+        public bool IsActive { get; set; }
+
         public virtual CityDistrict CityDistrict { get; set; }
     }
 }
