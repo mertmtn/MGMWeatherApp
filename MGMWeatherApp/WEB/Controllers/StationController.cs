@@ -60,7 +60,7 @@ namespace WEB.Controllers
                 SelectedCityId = result.CityId,
                 SelectedDistrictId = result.DistrictId,
                 GoogleMapsUrl = result.GoogleMapLink,
-                ICAO = result.ICAO.ToString(),
+                ICAO = result.ICAO,
                 StationNumber = result.StationNo
             };
 
